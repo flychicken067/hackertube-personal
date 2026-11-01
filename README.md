@@ -2,6 +2,8 @@
 
 一个纯静态的个人视频放映室。它合并两份公开数据：HackerTube 导出的 Hacker News 推荐视频，以及 Andrej Karpathy 官方 YouTube 频道的公开列表。相同 YouTube ID 会自动去重，再根据当前浏览器里的观看、点赞和话题偏好排序。
 
+在线使用：[https://flychicken067.github.io/hackertube-personal/](https://flychicken067.github.io/hackertube-personal/)
+
 没有账号、后端或远程个人数据。视频使用 `youtube-nocookie.com` 嵌入，本项目不托管视频文件。
 
 ## 本地启动
@@ -89,7 +91,7 @@ npm run build
 
 可部署文件在 `dist/` 目录。这是纯静态站点，可直接放到 Cloudflare Pages、GitHub Pages、Netlify、Vercel 或普通 Nginx 上。路由使用 URL Hash，不需要配置服务器重写规则。
 
-阶段 5 再根据“只在本机”还是“放到公网”选择具体部署方案。
+当前正式站使用 GitHub Pages。推送到 `main` 分支后，`.github/workflows/deploy-pages.yml` 会自动安装依赖、运行检查、构建并发布；发布记录可在仓库的 Actions 页面查看。默认域名自带 HTTPS，不需要服务器和密钥。
 
 ## 数据来源与许可
 
