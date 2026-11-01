@@ -34,9 +34,11 @@ export function validateCatalog(catalog: Catalog) {
 export function validateChannelSource(source: ChannelSource) {
   if (source.source?.id !== 'karpathy' || !Array.isArray(source.videos)) throw new Error('Karpathy 数据结构不正确');
   const ids = source.videos.map((video) => video.vid);
-  const missingCoreFields = source.videos.filter((video) => !video.vid || !video.title || !video.duration).length;
+  const missingCoreFields = source.videos.filter(
+    (video) => !video.vid || !video.title || (video.duration !== null && !video.duration),
+  ).length;
   const duplicateIds = ids.length - new Set(ids).size;
-  if (source.videos.length !== 17) throw new Error(`Karpathy 数据应有 17 条，实际 ${source.videos.length} 条`);
+  if (source.videos.length === 0) throw new Error('Karpathy 数据没有视频');
   if (missingCoreFields) throw new Error(`Karpathy 数据有 ${missingCoreFields} 条缺少核心字段`);
   if (duplicateIds) throw new Error(`Karpathy 数据有 ${duplicateIds} 个重复视频 ID`);
   return { videos: source.videos.length, duplicateIds, missingCoreFields };

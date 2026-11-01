@@ -78,6 +78,45 @@ describe('App', () => {
     );
   });
 
+  test('opens a featured Karpathy talk at the timestamp selected on his personal website', async () => {
+    const featured = makeCatalog([
+      makeVideo({
+        vid: 'featured001',
+        title: 'Featured Karpathy talk',
+        channel: 'Conference Channel',
+        source: 'karpathy',
+        sourceLabel: 'Featured on karpathy.ai',
+        startSeconds: 245,
+      } as Partial<ReturnType<typeof makeVideo>>),
+    ]);
+    render(<App initialCatalog={featured} />);
+
+    fireEvent.click(screen.getByRole('link', { name: 'Featured Karpathy talk' }));
+
+    await waitFor(() => expect(screen.getByRole('heading', { name: 'Featured Karpathy talk' })).toBeInTheDocument());
+    expect(screen.getByTitle('Featured Karpathy talk')).toHaveAttribute(
+      'src',
+      'https://www.youtube-nocookie.com/embed/featured001?rel=0&start=245',
+    );
+    expect(screen.getByText('Featured on karpathy.ai')).toBeInTheDocument();
+  });
+
+  test('shows Karpathy videos in the curated source order', async () => {
+    const unordered = makeCatalog([
+      makeVideo({ vid: 'second00001', title: 'Second source item', source: 'karpathy', sourceOrder: 1 } as Partial<ReturnType<typeof makeVideo>>),
+      makeVideo({ vid: 'first000001', title: 'First source item', source: 'karpathy', sourceOrder: 0 } as Partial<ReturnType<typeof makeVideo>>),
+    ]);
+    render(<App initialCatalog={unordered} />);
+
+    fireEvent.click(screen.getByRole('link', { name: 'Karpathy' }));
+
+    await waitFor(() => expect(screen.getByRole('heading', { name: 'Andrej Karpathy' })).toBeInTheDocument());
+    expect(screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)).toEqual([
+      'First source item',
+      'Second source item',
+    ]);
+  });
+
   test('shows liked videos on the Liked page', async () => {
     render(<App initialCatalog={catalog} />);
     fireEvent.click(screen.getByRole('button', { name: '点赞 A thoughtful systems talk' }));

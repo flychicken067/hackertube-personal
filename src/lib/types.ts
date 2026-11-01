@@ -41,14 +41,20 @@ export interface Video {
   source?: 'hackernews' | 'karpathy';
   viewsLabel?: string;
   publishedLabel?: string;
+  sourceLabel?: string;
+  startSeconds?: number;
+  sourceOrder?: number;
 }
 
 export interface ChannelSourceVideo {
   vid: string;
   title: string;
-  duration: string;
-  viewsLabel: string;
+  channel?: string;
+  duration: string | null;
+  viewsLabel?: string;
   publishedLabel: string;
+  sourceLabel?: string;
+  startSeconds?: number;
 }
 
 export interface ChannelSource {

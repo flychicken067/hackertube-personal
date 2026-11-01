@@ -42,7 +42,7 @@ export function Layout() {
       <div className="content-column">
         <main id="main-content"><Outlet /></main>
         <footer className="site-footer">
-          <p>Data from Hacker News comments · Inspired by <a href="https://hackertube.org/" target="_blank" rel="noreferrer">HackerTube</a> · Karpathy videos from his <a href="https://www.youtube.com/@AndrejKarpathy/videos" target="_blank" rel="noreferrer">official channel</a>.</p>
+          <p>Data from Hacker News comments · Inspired by <a href="https://hackertube.org/" target="_blank" rel="noreferrer">HackerTube</a> · Karpathy videos from his <a href="https://www.youtube.com/@AndrejKarpathy/videos" target="_blank" rel="noreferrer">official channel</a> and <a href="https://karpathy.ai/" target="_blank" rel="noreferrer">featured talks</a>.</p>
           <p>Videos play with YouTube privacy-enhanced embeds. No video files are hosted here.</p>
         </footer>
       </div>

@@ -24,7 +24,7 @@ export function VideoPage() {
         ) : (
           <iframe
             title={video.title}
-            src={`https://www.youtube-nocookie.com/embed/${video.vid}?rel=0`}
+            src={`https://www.youtube-nocookie.com/embed/${video.vid}?rel=0${video.startSeconds ? `&start=${video.startSeconds}` : ''}`}
             allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
           />
@@ -52,7 +52,7 @@ export function VideoPage() {
             {video.source === 'karpathy' ? <>
               <div><dt>Views</dt><dd>{video.viewsLabel ?? '—'}</dd></div>
               <div><dt>Published</dt><dd>{video.publishedLabel ?? '—'}</dd></div>
-              <div><dt>Source</dt><dd>Official channel</dd></div>
+              <div><dt>Source</dt><dd>{video.sourceLabel ?? 'Official YouTube channel'}</dd></div>
             </> : <>
               <div><dt>HN 推荐</dt><dd>{video.hn.recommenders} 人推荐</dd></div>
               <div><dt>被提及</dt><dd>{video.hn.mentions} 次</dd></div>

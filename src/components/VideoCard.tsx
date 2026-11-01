@@ -8,8 +8,8 @@ export function VideoCard({ video }: { video: Video }) {
   const { state, selectedId, setSelectedId, toggleLike, toggleLater } = useLibrary();
   const liked = state.likes.includes(video.vid);
   const later = state.watchLater.includes(video.vid);
-  const metadata = video.source === 'karpathy' && video.viewsLabel
-    ? `${video.viewsLabel} views · ${video.publishedLabel}`
+  const metadata = video.source === 'karpathy'
+    ? [video.viewsLabel ? `${video.viewsLabel} views` : video.sourceLabel, video.publishedLabel].filter(Boolean).join(' · ')
     : `${video.hn.recommenders} HN recommendations${video.hn.lastYear ? ` · ${video.hn.lastYear}` : ''}`;
 
   return (

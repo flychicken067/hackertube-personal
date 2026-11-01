@@ -12,7 +12,7 @@ export function mergeKarpathySource(catalog: Catalog, channel: ChannelSource): C
   const machineLearning = findCategory(catalog, 'machine-learning') ?? fallbackCategory;
   const generativeAI = findCategory(catalog, 'llms-generative-ai');
 
-  for (const item of channel.videos) {
+  for (const [sourceOrder, item] of channel.videos.entries()) {
     const current = existing.get(item.vid);
     if (current) {
       existing.set(item.vid, {
@@ -21,6 +21,9 @@ export function mergeKarpathySource(catalog: Catalog, channel: ChannelSource): C
         duration: item.duration || current.duration,
         viewsLabel: item.viewsLabel,
         publishedLabel: item.publishedLabel,
+        sourceLabel: item.sourceLabel ?? 'Official YouTube channel',
+        startSeconds: item.startSeconds,
+        sourceOrder,
       });
       continue;
     }
@@ -33,12 +36,16 @@ export function mergeKarpathySource(catalog: Catalog, channel: ChannelSource): C
       vid: item.vid,
       url: `https://www.youtube.com/watch?v=${item.vid}`,
       title: item.title,
-      channel: channel.source.name,
+      channel: item.channel ?? channel.source.name,
       summary: diffusion
         ? 'Andrej Karpathy 使用 Stable Diffusion 生成的一段视觉实验。'
-        : 'Andrej Karpathy 官方频道发布的人工智能与神经网络课程。',
-      whyHn: '来自 Andrej Karpathy 官方 YouTube 频道。',
-      contentType: diffusion ? 'demo' : 'course',
+        : item.sourceLabel
+          ? 'Andrej Karpathy 个人官网精选的播客、访谈或演讲。'
+          : 'Andrej Karpathy 官方频道发布的人工智能与神经网络课程。',
+      whyHn: item.sourceLabel
+        ? '收录自 Andrej Karpathy 个人官网的 featured talks。'
+        : '来自 Andrej Karpathy 官方 YouTube 频道。',
+      contentType: diffusion ? 'demo' : item.sourceLabel ? 'talk' : 'course',
       level: 'technical',
       shelfLife: 'evergreen',
       primaryTopic: diffusion ? 'generative AI' : 'machine learning',
@@ -61,6 +68,9 @@ export function mergeKarpathySource(catalog: Catalog, channel: ChannelSource): C
       source: 'karpathy',
       viewsLabel: item.viewsLabel,
       publishedLabel: item.publishedLabel,
+      sourceLabel: item.sourceLabel ?? 'Official YouTube channel',
+      startSeconds: item.startSeconds,
+      sourceOrder,
     };
     existing.set(item.vid, video);
   }

@@ -1,6 +1,6 @@
 # HackerTube 个人放映室
 
-一个纯静态的个人视频放映室。它合并两份公开数据：HackerTube 导出的 Hacker News 推荐视频，以及 Andrej Karpathy 官方 YouTube 频道的公开列表。相同 YouTube ID 会自动去重，再根据当前浏览器里的观看、点赞和话题偏好排序。
+一个纯静态的个人视频放映室。它合并公开数据：HackerTube 导出的 Hacker News 推荐视频、Andrej Karpathy 官方 YouTube 频道的公开列表，以及他个人官网列出的 featured talks 与 podcasts。相同 YouTube ID 会自动去重，再根据当前浏览器里的观看、点赞和话题偏好排序。
 
 在线使用：[https://flychicken067.github.io/hackertube-personal/](https://flychicken067.github.io/hackertube-personal/)
 
@@ -72,9 +72,9 @@ npm run data:build
 
 ## 更新 Karpathy 数据
 
-Karpathy 的独立数据文件是 `public/data/karpathy.json`，来源是他的[官方频道公开视频页](https://www.youtube.com/@AndrejKarpathy/videos)。当前快照包含 17 条公开视频，其中 6 条已存在于 HackerTube 数据里；浏览器加载时按视频 ID 合并，最终总目录为 6,465 条。
+Karpathy 的独立数据文件是 `public/data/karpathy.json`，来源是他的[官方频道公开视频页](https://www.youtube.com/@AndrejKarpathy/videos)和[个人官网 featured talks](https://karpathy.ai/)。当前快照包含 17 条官方频道视频和 20 条官网精选播客/演讲，共 37 条；其中 16 条已存在于 HackerTube 数据里。浏览器加载时按视频 ID 合并，最终总目录为 6,475 条。
 
-更新时只需对照官方频道公开视频列表，修改标题、时长、观看量显示和发布时间显示，然后运行：
+更新时对照官方频道公开视频列表与个人官网 featured talks，修改标题、来源、时长、观看量显示和发布时间显示，然后运行：
 
 ```bash
 npm run check:data
@@ -95,7 +95,7 @@ npm run build
 
 ## 数据来源与许可
 
-数据来自 Hacker News 评论、[HackerTube](https://hackertube.org/) 公开导出和 [Andrej Karpathy 官方 YouTube 频道](https://www.youtube.com/@AndrejKarpathy/videos)。HackerTube 导出使用 [ODC-By 1.0](https://opendatacommons.org/licenses/by/1-0/)，使用时应署名 HackerTube 和 [open-index/hacker-news](https://huggingface.co/datasets/open-index/hacker-news)。评论、视频标题、频道名和缩略图归各自作者或平台所有。
+数据来自 Hacker News 评论、[HackerTube](https://hackertube.org/) 公开导出、[Andrej Karpathy 官方 YouTube 频道](https://www.youtube.com/@AndrejKarpathy/videos)和他的[个人官网精选清单](https://karpathy.ai/)。HackerTube 导出使用 [ODC-By 1.0](https://opendatacommons.org/licenses/by/1-0/)，使用时应署名 HackerTube 和 [open-index/hacker-news](https://huggingface.co/datasets/open-index/hacker-news)。评论、视频标题、频道名和缩略图归各自作者或平台所有。
 
 界面参考 HackerTube 当前公开页面的布局与交互，但组件、样式和代码均在本项目中重新实现，没有复制其前端源码。
 
