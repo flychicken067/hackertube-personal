@@ -1,36 +1,51 @@
+import { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
+import { Icon } from './Icon';
 import { SearchBar } from './SearchBar';
 
 const nav = [
-  ['/', '为你放映'],
-  ['/liked', '已点赞'],
-  ['/history', '历史'],
-  ['/later', '稍后看'],
-  ['/settings', '设置'],
+  ['/', 'Home', 'home'],
+  ['/karpathy', 'Karpathy', 'play'],
+  ['/longs', 'Longs', 'longs'],
+  ['/liked', 'Liked', 'liked'],
+  ['/history', 'History', 'history'],
+  ['/later', 'Watch later', 'later'],
+  ['/categories', 'Categories', 'categories'],
+  ['/playlists', 'Playlists', 'playlists'],
+  ['/settings', 'Settings', 'settings'],
 ] as const;
 
 export function Layout() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [dark, setDark] = useState(false);
   return (
-    <div className="app-shell">
-      <header className="site-header">
-        <NavLink className="brand" to="/" aria-label="HackerTube 个人版首页">
-          <span className="brand-mark">H</span>
-          <span>HackerTube</span>
-          <small>个人放映室</small>
-        </NavLink>
+    <div className="app-shell" data-theme={dark ? 'dark' : 'light'}>
+      <header className="topbar">
+        <button className="icon-button menu-button" type="button" aria-label="打开菜单" aria-expanded={menuOpen} onClick={() => setMenuOpen((value) => !value)}><Icon name="menu" /></button>
+        <NavLink className="wordmark" to="/" aria-label="HackerTube 首页"><span>Hacker</span><strong>Tube</strong></NavLink>
         <SearchBar />
-        <button className="help-button" type="button" onClick={() => window.dispatchEvent(new Event('open-shortcuts'))}>
-          快捷键 <kbd>?</kbd>
-        </button>
+        <div className="topbar-actions">
+          <button className="icon-button" type="button" aria-label="键盘快捷键" title="Keyboard shortcuts" onClick={() => window.dispatchEvent(new Event('open-shortcuts'))}><Icon name="help" /></button>
+          <button className="icon-button" type="button" aria-label={dark ? '切换浅色模式' : '切换深色模式'} title="Toggle theme" onClick={() => setDark((value) => !value)}><Icon name={dark ? 'sun' : 'moon'} /></button>
+        </div>
       </header>
-      <nav className="site-nav" aria-label="主导航">
-        {nav.map(([to, label]) => <NavLink key={to} to={to} end={to === '/'}>{label}</NavLink>)}
-      </nav>
-      <main id="main-content"><Outlet /></main>
-      <footer className="site-footer">
-        <p>数据来自 Hacker News 评论，参考了 <a href="https://hackertube.org/" target="_blank" rel="noreferrer">HackerTube</a>。</p>
-        <p>视频由 YouTube 隐私增强模式播放，本站不托管视频文件。</p>
-      </footer>
+      <aside className={`sidebar${menuOpen ? ' is-open' : ''}`}>
+        <nav aria-label="主导航">
+          {nav.map(([to, label, icon], index) => (
+            <div key={to} className={index === 3 || index === 6 || index === 8 ? 'nav-section' : undefined}>
+              <NavLink to={to} end={to === '/'} onClick={() => setMenuOpen(false)}><Icon name={icon} /><span>{label}</span></NavLink>
+            </div>
+          ))}
+        </nav>
+      </aside>
+      {menuOpen && <button className="menu-backdrop" type="button" aria-label="关闭菜单" onClick={() => setMenuOpen(false)} />}
+      <div className="content-column">
+        <main id="main-content"><Outlet /></main>
+        <footer className="site-footer">
+          <p>Data from Hacker News comments · Inspired by <a href="https://hackertube.org/" target="_blank" rel="noreferrer">HackerTube</a> · Karpathy videos from his <a href="https://www.youtube.com/@AndrejKarpathy/videos" target="_blank" rel="noreferrer">official channel</a>.</p>
+          <p>Videos play with YouTube privacy-enhanced embeds. No video files are hosted here.</p>
+        </footer>
+      </div>
     </div>
   );
 }

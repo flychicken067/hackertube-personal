@@ -14,7 +14,7 @@ export default defineConfig({
     reuseExistingServer: true,
   },
   projects: [
-    { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
-    { name: 'mobile', use: { ...devices['iPhone 13'] } },
+    { name: 'desktop', use: { ...devices['Desktop Chrome'], channel: 'chrome' } },
+    { name: 'mobile', use: { ...devices['Pixel 7'], channel: 'chrome' } },
   ],
 });

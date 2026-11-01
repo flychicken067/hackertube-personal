@@ -4,8 +4,13 @@ import { Layout } from './components/Layout';
 import { ShortcutHelp } from './components/ShortcutHelp';
 import { CatalogProvider } from './lib/CatalogContext';
 import { LibraryProvider, useLibrary } from './lib/LibraryContext';
-import type { Catalog } from './lib/types';
+import { mergeKarpathySource } from './lib/dataSources';
+import type { Catalog, ChannelSource } from './lib/types';
+import { CategoriesPage } from './pages/CategoriesPage';
 import { HomePage } from './pages/HomePage';
+import { KarpathyPage } from './pages/KarpathyPage';
+import { LongsPage } from './pages/LongsPage';
+import { PlaylistsPage } from './pages/PlaylistsPage';
 import { SavedPage } from './pages/SavedPage';
 import { SearchPage } from './pages/SearchPage';
 import { SettingsPage } from './pages/SettingsPage';
@@ -18,10 +23,15 @@ export function App({ initialCatalog }: { initialCatalog?: Catalog }) {
 
   useEffect(() => {
     if (initialCatalog) return;
-    fetch(new URL('data/catalog.json', document.baseURI))
-      .then((response) => {
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        return response.json() as Promise<Catalog>;
+    Promise.all([
+      fetch(new URL('data/catalog.json', document.baseURI)),
+      fetch(new URL('data/karpathy.json', document.baseURI)),
+    ])
+      .then(async ([catalogResponse, karpathyResponse]) => {
+        if (!catalogResponse.ok || !karpathyResponse.ok) throw new Error('数据文件不可用');
+        const base = await catalogResponse.json() as Catalog;
+        const karpathy = await karpathyResponse.json() as ChannelSource;
+        return mergeKarpathySource(base, karpathy);
       })
       .then(setCatalog)
       .catch(() => setError('数据加载失败，请刷新页面重试。'));
@@ -38,6 +48,10 @@ export function App({ initialCatalog }: { initialCatalog?: Catalog }) {
           <Routes>
             <Route element={<Layout />}>
               <Route index element={<HomePage />} />
+              <Route path="karpathy" element={<KarpathyPage />} />
+              <Route path="longs" element={<LongsPage />} />
+              <Route path="categories" element={<CategoriesPage />} />
+              <Route path="playlists" element={<PlaylistsPage />} />
               <Route path="search" element={<SearchPage />} />
               <Route path="topic/:id" element={<TopicPage />} />
               <Route path="watch/:vid" element={<VideoPage />} />

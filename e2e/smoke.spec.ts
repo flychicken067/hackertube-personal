@@ -8,13 +8,13 @@ test('data loads, home opens, search and shortcuts work without page errors', as
   });
 
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: '为你放映' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Home', exact: true })).toBeAttached();
   await expect(page.locator('[data-video-card]').first()).toBeVisible();
 
   const search = page.getByRole('searchbox', { name: '搜索视频和话题' });
   await search.fill('linear algebra');
   await search.press('Enter');
-  await expect(page.getByRole('heading', { name: '搜索结果' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Search results' })).toBeVisible();
   await expect(page.locator('[data-video-card]').first()).toBeVisible();
 
   await page.keyboard.press('Escape');
@@ -38,7 +38,7 @@ test('keyboard like is saved locally', async ({ page }) => {
 
 test('layout has no horizontal overflow', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: '为你放映' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Home', exact: true })).toBeAttached();
   const sizes = await page.evaluate(() => ({ scroll: document.documentElement.scrollWidth, client: document.documentElement.clientWidth }));
   expect(sizes.scroll).toBeLessThanOrEqual(sizes.client + 1);
 });

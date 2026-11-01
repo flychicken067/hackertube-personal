@@ -23,7 +23,7 @@ describe('App', () => {
   test('opens the For You page with ranked videos from the catalog', () => {
     render(<App initialCatalog={catalog} />);
 
-    expect(screen.getByRole('heading', { name: '为你放映' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Home' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'A thoughtful systems talk' })).toBeInTheDocument();
   });
 
@@ -34,7 +34,7 @@ describe('App', () => {
     fireEvent.change(search, { target: { value: 'geometry' } });
     fireEvent.submit(search.closest('form')!);
 
-    await waitFor(() => expect(screen.getByRole('heading', { name: '搜索结果' })).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByRole('heading', { name: 'Search results' })).toBeInTheDocument());
     expect(screen.getByRole('heading', { name: 'Geometry for Artists' })).toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: 'A thoughtful systems talk' })).not.toBeInTheDocument();
   });
@@ -81,15 +81,15 @@ describe('App', () => {
   test('shows liked videos on the Liked page', async () => {
     render(<App initialCatalog={catalog} />);
     fireEvent.click(screen.getByRole('button', { name: '点赞 A thoughtful systems talk' }));
-    fireEvent.click(screen.getByRole('link', { name: '已点赞' }));
+    fireEvent.click(screen.getByRole('link', { name: 'Liked' }));
 
-    await waitFor(() => expect(screen.getByRole('heading', { name: '已点赞' })).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByRole('heading', { name: 'Liked' })).toBeInTheDocument());
     expect(screen.getByRole('heading', { name: 'A thoughtful systems talk' })).toBeInTheDocument();
   });
 
   test('changes a topic preference on Settings and stores it locally', async () => {
     render(<App initialCatalog={catalog} />);
-    fireEvent.click(screen.getByRole('link', { name: '设置' }));
+    fireEvent.click(screen.getByRole('link', { name: 'Settings' }));
 
     const preference = await screen.findByRole('combobox', { name: 'Distributed systems 偏好' });
     fireEvent.change(preference, { target: { value: '2' } });

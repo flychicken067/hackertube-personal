@@ -38,6 +38,29 @@ export interface Video {
   duration: string | null;
   available?: boolean | null;
   embeddable?: boolean | null;
+  source?: 'hackernews' | 'karpathy';
+  viewsLabel?: string;
+  publishedLabel?: string;
+}
+
+export interface ChannelSourceVideo {
+  vid: string;
+  title: string;
+  duration: string;
+  viewsLabel: string;
+  publishedLabel: string;
+}
+
+export interface ChannelSource {
+  version: number;
+  generated: string;
+  source: {
+    id: 'karpathy';
+    name: string;
+    channelId: string;
+    url: string;
+  };
+  videos: ChannelSourceVideo[];
 }
 
 export interface TopicCategory {

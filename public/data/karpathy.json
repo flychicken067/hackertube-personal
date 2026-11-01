@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "generated": "2026-11-01",
+  "source": {
+    "id": "karpathy",
+    "name": "Andrej Karpathy",
+    "channelId": "UCXUPKJO5MZQN11PqgIvyuvQ",
+    "url": "https://www.youtube.com/@AndrejKarpathy/videos"
+  },
+  "videos": [
+    { "vid": "EWvNQjAaOHw", "title": "How I use LLMs", "duration": "2:11:00", "viewsLabel": "2.8M", "publishedLabel": "1 year ago" },
+    { "vid": "7xTGNNLPyMI", "title": "Deep Dive into LLMs like ChatGPT", "duration": "3:31:00", "viewsLabel": "10M", "publishedLabel": "1 year ago" },
+    { "vid": "l8pRSuU81PU", "title": "Let's reproduce GPT-2 (124M)", "duration": "4:01:00", "viewsLabel": "1.2M", "publishedLabel": "2 years ago" },
+    { "vid": "zduSFxRajkE", "title": "Let's build the GPT Tokenizer", "duration": "2:13:00", "viewsLabel": "1.2M", "publishedLabel": "2 years ago" },
+    { "vid": "zjkBMFhNj_g", "title": "[1hr Talk] Intro to Large Language Models", "duration": "59:00", "viewsLabel": "4.3M", "publishedLabel": "2 years ago" },
+    { "vid": "kCc8FmEb1nY", "title": "Let's build GPT: from scratch, in code, spelled out.", "duration": "1:56:00", "viewsLabel": "8.1M", "publishedLabel": "3 years ago" },
+    { "vid": "t3YJ5hKiMQ0", "title": "Building makemore Part 5: Building a WaveNet", "duration": "56:00", "viewsLabel": "304K", "publishedLabel": "3 years ago" },
+    { "vid": "q8SA3rM6ckI", "title": "Building makemore Part 4: Becoming a Backprop Ninja", "duration": "1:55:00", "viewsLabel": "388K", "publishedLabel": "4 years ago" },
+    { "vid": "P6sfmUTpUmc", "title": "Building makemore Part 3: Activations & Gradients, BatchNorm", "duration": "1:55:00", "viewsLabel": "567K", "publishedLabel": "4 years ago" },
+    { "vid": "TCH_1BHY58I", "title": "Building makemore Part 2: MLP", "duration": "1:15:00", "viewsLabel": "610K", "publishedLabel": "4 years ago" },
+    { "vid": "PaCmpygFfXo", "title": "The spelled-out intro to language modeling: building makemore", "duration": "1:57:00", "viewsLabel": "1.3M", "publishedLabel": "4 years ago" },
+    { "vid": "kVpDARqZdrQ", "title": "Stable diffusion dreams of psychedelic faces", "duration": "4:02", "viewsLabel": "54K", "publishedLabel": "4 years ago" },
+    { "vid": "2oKjtvYslMY", "title": "Stable diffusion dreams of steampunk brains", "duration": "19:00", "viewsLabel": "38K", "publishedLabel": "4 years ago" },
+    { "vid": "sM9bozW295Q", "title": "Stable diffusion dreams of tattoos", "duration": "1:46", "viewsLabel": "105K", "publishedLabel": "4 years ago" },
+    { "vid": "VMj-3S1tku0", "title": "The spelled-out intro to neural networks and backpropagation: building micrograd", "duration": "2:25:00", "viewsLabel": "4.3M", "publishedLabel": "4 years ago" },
+    { "vid": "vEnetcj_728", "title": "Stable diffusion dreams of \"blueberry spaghetti\" for one night", "duration": "5:03", "viewsLabel": "96K", "publishedLabel": "4 years ago" },
+    { "vid": "Jv1ayv-04H4", "title": "Stable diffusion dreams of steam punk neural networks", "duration": "2:35", "viewsLabel": "73K", "publishedLabel": "4 years ago" }
+  ]
+}

@@ -42,16 +42,22 @@ export function VideoPage() {
           </div>
           <h2>这段视频讲什么</h2>
           <p>{video.summary}</p>
-          <h2>HN 为什么推荐</h2>
+          <h2>{video.source === 'karpathy' ? 'About this source' : 'HN 为什么推荐'}</h2>
           <p>{video.whyHn}</p>
           {video.quote && <blockquote>“{video.quote.text}”</blockquote>}
         </section>
         <aside className="video-facts">
           <dl>
             <div><dt>时长</dt><dd>{video.duration ?? '时长未知'}</dd></div>
-            <div><dt>HN 推荐</dt><dd>{video.hn.recommenders} 人推荐</dd></div>
-            <div><dt>被提及</dt><dd>{video.hn.mentions} 次</dd></div>
-            <div><dt>时间跨度</dt><dd>{video.hn.firstYear}–{video.hn.lastYear}</dd></div>
+            {video.source === 'karpathy' ? <>
+              <div><dt>Views</dt><dd>{video.viewsLabel ?? '—'}</dd></div>
+              <div><dt>Published</dt><dd>{video.publishedLabel ?? '—'}</dd></div>
+              <div><dt>Source</dt><dd>Official channel</dd></div>
+            </> : <>
+              <div><dt>HN 推荐</dt><dd>{video.hn.recommenders} 人推荐</dd></div>
+              <div><dt>被提及</dt><dd>{video.hn.mentions} 次</dd></div>
+              <div><dt>时间跨度</dt><dd>{video.hn.firstYear}–{video.hn.lastYear}</dd></div>
+            </>}
           </dl>
           <div className="topic-list">{video.categories.map((category) => <Link key={category.id} to={`/topic/${category.id}`}>{category.name}</Link>)}</div>
           {video.quote && <a className="hn-link" href={`https://news.ycombinator.com/item?id=${video.quote.hnCommentId}`} target="_blank" rel="noreferrer">查看原 HN 评论</a>}

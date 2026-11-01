@@ -5,7 +5,7 @@ export function rankVideos(videos: Video[], _state: LibraryState, _day: string):
   const deduped = new Map<string, Video>();
 
   for (const video of videos) {
-    if (video.hn.recommenders <= 0 || video.shelfLife === 'news') continue;
+    if ((video.hn.recommenders <= 0 && video.source !== 'karpathy') || video.shelfLife === 'news') continue;
     const key = video.title.toLocaleLowerCase().normalize('NFKC').replace(/\s+/g, ' ').trim();
     const current = deduped.get(key);
     if (!current || video.score > current.score) deduped.set(key, video);
@@ -17,6 +17,7 @@ export function rankVideos(videos: Video[], _state: LibraryState, _day: string):
       rank:
         Math.log2(1 + video.hn.recommenders) * 4 +
         video.score * 0.35 +
+        (video.source === 'karpathy' ? 8 : 0) +
         video.categories.reduce(
           (total, category) => total + (_state.topicPreferences[category.id] ?? 0) * 5,
           0,

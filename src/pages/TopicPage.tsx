@@ -9,5 +9,5 @@ export function TopicPage() {
   const videos = catalog.videos
     .filter((video) => video.categories.some((category) => category.id === id))
     .sort((a, b) => b.score - a.score);
-  return <><section className="page-intro compact"><div><p className="eyebrow">TOPIC</p><h1>{topic?.name ?? '话题'}</h1></div><p>{topic?.description ?? `${videos.length} 个相关视频。`}</p></section><VideoGrid videos={videos} /></>;
+  return <><header className="page-heading"><h1>{topic?.name ?? 'Topic'}</h1><p>{topic?.description ?? `${videos.length} related videos.`}</p></header><VideoGrid videos={videos} /></>;
 }

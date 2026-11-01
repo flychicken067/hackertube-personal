@@ -9,7 +9,7 @@ export function SearchPage() {
   const videos = searchVideos(useCatalog().videos, query).slice(0, 100);
   return (
     <>
-      <section className="page-intro compact"><div><p className="eyebrow">SEARCH</p><h1>搜索结果</h1></div><p>“{query}”，找到 {videos.length} 条结果。</p></section>
+      <header className="page-heading"><h1>Search results</h1><p>“{query}” · {videos.length} results</p></header>
       <VideoGrid videos={videos} empty="没找到匹配的标题或话题。" />
     </>
   );
