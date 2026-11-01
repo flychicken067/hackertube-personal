@@ -103,13 +103,24 @@ function KeyboardShortcuts() {
       } else if (event.key.toLocaleLowerCase() === 'l') {
         event.preventDefault();
         toggleLike(vid);
-      } else if (event.key.toLocaleLowerCase() === 'w') {
-        event.preventDefault();
-        toggleLater(vid);
       }
     };
+    const onKeyUp = (event: KeyboardEvent) => {
+      const target = event.target;
+      const isTyping = target instanceof Element && !!target.closest('input, textarea, select, [contenteditable="true"]');
+      if (isTyping || event.key.toLocaleLowerCase() !== 'w') return;
+
+      const vid = (document.activeElement as HTMLElement | null)?.dataset.videoId ?? selectedId;
+      if (!vid) return;
+      event.preventDefault();
+      toggleLater(vid);
+    };
     window.addEventListener('keydown', onKeyDown, true);
-    return () => window.removeEventListener('keydown', onKeyDown, true);
+    window.addEventListener('keyup', onKeyUp, true);
+    return () => {
+      window.removeEventListener('keydown', onKeyDown, true);
+      window.removeEventListener('keyup', onKeyUp, true);
+    };
   }, [selectedId, setSelectedId, toggleLater, toggleLike]);
 
   return showHelp ? <ShortcutHelp onClose={() => setShowHelp(false)} /> : null;
