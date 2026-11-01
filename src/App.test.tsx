@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { beforeEach, describe, expect, test } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { App } from './App';
 import { makeCatalog, makeVideo } from './test/fixtures';
 
@@ -18,6 +18,26 @@ describe('App', () => {
   beforeEach(() => {
     window.localStorage.clear();
     window.location.hash = '#/';
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  test('revalidates public data files so a new deployment is visible immediately', async () => {
+    const channel = {
+      source: { id: 'karpathy', name: 'Andrej Karpathy', url: 'https://www.youtube.com/@AndrejKarpathy' },
+      videos: [],
+    };
+    const fetchMock = vi.spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce({ ok: true, json: async () => catalog } as Response)
+      .mockResolvedValueOnce({ ok: true, json: async () => channel } as Response);
+
+    render(<App />);
+
+    await screen.findByRole('heading', { name: 'Home' });
+    expect(fetchMock).toHaveBeenNthCalledWith(1, expect.any(URL), { cache: 'no-cache' });
+    expect(fetchMock).toHaveBeenNthCalledWith(2, expect.any(URL), { cache: 'no-cache' });
   });
 
   test('opens the For You page with ranked videos from the catalog', () => {

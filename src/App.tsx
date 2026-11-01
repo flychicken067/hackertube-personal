@@ -24,8 +24,8 @@ export function App({ initialCatalog }: { initialCatalog?: Catalog }) {
   useEffect(() => {
     if (initialCatalog) return;
     Promise.all([
-      fetch(new URL('data/catalog.json', document.baseURI)),
-      fetch(new URL('data/karpathy.json', document.baseURI)),
+      fetch(new URL('data/catalog.json', document.baseURI), { cache: 'no-cache' }),
+      fetch(new URL('data/karpathy.json', document.baseURI), { cache: 'no-cache' }),
     ])
       .then(async ([catalogResponse, karpathyResponse]) => {
         if (!catalogResponse.ok || !karpathyResponse.ok) throw new Error('数据文件不可用');
