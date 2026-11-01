@@ -108,8 +108,8 @@ function KeyboardShortcuts() {
         toggleLater(vid);
       }
     };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
+    window.addEventListener('keydown', onKeyDown, true);
+    return () => window.removeEventListener('keydown', onKeyDown, true);
   }, [selectedId, setSelectedId, toggleLater, toggleLike]);
 
   return showHelp ? <ShortcutHelp onClose={() => setShowHelp(false)} /> : null;
