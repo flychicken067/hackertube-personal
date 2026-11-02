@@ -24,6 +24,7 @@ export function rankVideos(videos: Video[], _state: LibraryState, _day: string):
         ) +
         (seen.has(video.vid) ? -20 : 1.5) +
         (_state.likes.includes(video.vid) ? 2 : 0) +
+        (_state.dislikes.includes(video.vid) ? -100 : 0) +
         dailyJitter(video.vid, _day),
     }))
     .sort((a, b) => b.rank - a.rank || b.video.score - a.video.score || a.video.vid.localeCompare(b.video.vid))

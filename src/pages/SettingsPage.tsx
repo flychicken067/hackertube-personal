@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { useCatalog } from '../lib/CatalogContext';
 import { useLibrary } from '../lib/LibraryContext';
+import { exportLibraryState } from '../lib/storage';
 
 export function SettingsPage() {
   const catalog = useCatalog();
@@ -9,7 +10,7 @@ export function SettingsPage() {
   const [message, setMessage] = useState('');
 
   const exportState = () => {
-    const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+    const blob = new Blob([exportLibraryState(state)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement('a');
     anchor.href = url;
@@ -22,7 +23,7 @@ export function SettingsPage() {
     <div className="settings-page">
       <section className="page-intro compact"><div><p className="eyebrow">LOCAL ONLY</p><h1>设置</h1></div><p>这里没有账号。你可以随时导出或清除所有本地记录。</p></section>
       <section className="settings-section">
-        <div><p className="eyebrow">DATA</p><h2>你的数据</h2><p>{state.likes.length} 个点赞，{state.history.length} 条历史，{state.watchLater.length} 个稍后看。</p></div>
+        <div><p className="eyebrow">DATA</p><h2>你的数据</h2><p>{state.likes.length} 个点赞，{state.dislikes.length} 个不喜欢，{state.history.length} 条历史，{state.watchLater.length} 个稍后看。</p></div>
         <div className="settings-actions">
           <button type="button" onClick={exportState}>导出我的数据</button>
           <button type="button" onClick={() => fileRef.current?.click()}>导入数据</button>
@@ -38,7 +39,7 @@ export function SettingsPage() {
               catch (error) { setMessage(error instanceof Error ? error.message : '导入失败。'); }
             }}
           />
-          <button className="danger" type="button" onClick={() => { if (window.confirm('确定清除所有点赞、历史和偏好吗？')) { clear(); setMessage('本地数据已清除。'); } }}>清除本地数据</button>
+          <button className="danger" type="button" onClick={() => { if (window.confirm('确定清除所有点赞、不喜欢、历史和偏好吗？')) { clear(); setMessage('本地数据已清除。'); } }}>清除本地数据</button>
           {message && <p role="status">{message}</p>}
         </div>
       </section>

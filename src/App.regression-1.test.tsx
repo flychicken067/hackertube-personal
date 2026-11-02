@@ -33,7 +33,7 @@ describe('App keyboard shortcut regression', () => {
     }
 
     await waitFor(() => {
-      const saved = JSON.parse(window.localStorage.getItem('hackertube-personal:v1') ?? '{}');
+      const saved = JSON.parse(window.localStorage.getItem('hackertube-personal:v2') ?? '{}');
       expect(saved.watchLater).toContain('systems0001');
     });
   });

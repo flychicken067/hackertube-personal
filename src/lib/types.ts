@@ -113,9 +113,11 @@ export interface HistoryEntry {
 }
 
 export interface LibraryState {
-  version: 1;
+  version: 2;
   likes: string[];
+  dislikes: string[];
   watchLater: string[];
   history: HistoryEntry[];
   topicPreferences: Record<string, number>;
+  useVideoFrames: boolean;
 }

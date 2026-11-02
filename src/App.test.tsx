@@ -68,7 +68,7 @@ describe('App', () => {
     fireEvent.keyDown(window, { key: 'l' });
 
     await waitFor(() => {
-      const saved = JSON.parse(window.localStorage.getItem('hackertube-personal:v1') ?? '{}');
+      const saved = JSON.parse(window.localStorage.getItem('hackertube-personal:v2') ?? '{}');
       expect(saved.likes).toContain(firstVideoId);
     });
   });
@@ -169,6 +169,18 @@ describe('App', () => {
     expect(screen.getByRole('heading', { name: 'A thoughtful systems talk' })).toBeInTheDocument();
   });
 
+  test('makes like and dislike mutually exclusive on a video page', async () => {
+    render(<App initialCatalog={catalog} />);
+    fireEvent.click(screen.getByRole('link', { name: 'A thoughtful systems talk' }));
+
+    fireEvent.click(await screen.findByRole('button', { name: '点赞' }));
+    fireEvent.click(screen.getByRole('button', { name: '不喜欢' }));
+
+    const saved = JSON.parse(window.localStorage.getItem('hackertube-personal:v2') ?? '{}');
+    expect(saved.likes).not.toContain('systems0001');
+    expect(saved.dislikes).toContain('systems0001');
+  });
+
   test('changes a topic preference on Settings and stores it locally', async () => {
     render(<App initialCatalog={catalog} />);
     fireEvent.click(screen.getByRole('link', { name: 'Settings' }));
@@ -176,7 +188,7 @@ describe('App', () => {
     const preference = await screen.findByRole('combobox', { name: 'Distributed systems 偏好' });
     fireEvent.change(preference, { target: { value: '2' } });
 
-    const saved = JSON.parse(window.localStorage.getItem('hackertube-personal:v1') ?? '{}');
+    const saved = JSON.parse(window.localStorage.getItem('hackertube-personal:v2') ?? '{}');
     expect(saved.topicPreferences).toEqual({ 'distributed-systems': 2 });
   });
 });

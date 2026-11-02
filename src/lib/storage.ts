@@ -12,6 +12,22 @@ export function updateHistory(history: HistoryEntry[], _vid: string, _watchedAt:
   ].slice(0, 1000);
 }
 
+export function updateReaction(
+  state: LibraryState,
+  vid: string,
+  reaction: 'like' | 'dislike' | 'clear',
+): LibraryState {
+  return {
+    ...state,
+    likes: reaction === 'like' ? [...state.likes.filter((id) => id !== vid), vid] : state.likes.filter((id) => id !== vid),
+    dislikes: reaction === 'dislike' ? [...state.dislikes.filter((id) => id !== vid), vid] : state.dislikes.filter((id) => id !== vid),
+  };
+}
+
+export function exportLibraryState(state: LibraryState) {
+  return JSON.stringify(state, null, 2);
+}
+
 export function importLibraryState(_raw: string): LibraryState {
   let value: unknown;
   try {
@@ -19,15 +35,31 @@ export function importLibraryState(_raw: string): LibraryState {
   } catch {
     throw new Error('无法识别这个文件');
   }
-  if (!isLibraryState(value)) throw new Error('无法识别这个文件');
-  return value;
+  if (isV2LibraryState(value)) return value;
+  if (isV1LibraryState(value)) {
+    return {
+      ...value,
+      version: 2,
+      dislikes: [],
+      useVideoFrames: true,
+    };
+  }
+  throw new Error('无法识别这个文件');
 }
 
-function isLibraryState(value: unknown): value is LibraryState {
+interface V1LibraryState {
+  version: 1;
+  likes: string[];
+  watchLater: string[];
+  history: HistoryEntry[];
+  topicPreferences: Record<string, number>;
+}
+
+function hasValidBaseFields(value: unknown): value is Omit<V1LibraryState, 'version'> & { version: number } {
   if (!value || typeof value !== 'object') return false;
   const state = value as Partial<LibraryState>;
   return (
-    state.version === 1 &&
+    typeof state.version === 'number' &&
     Array.isArray(state.likes) &&
     state.likes.every((item) => typeof item === 'string') &&
     Array.isArray(state.watchLater) &&
@@ -43,5 +75,20 @@ function isLibraryState(value: unknown): value is LibraryState {
     !!state.topicPreferences &&
     typeof state.topicPreferences === 'object' &&
     Object.values(state.topicPreferences).every((item) => typeof item === 'number')
+  );
+}
+
+function isV1LibraryState(value: unknown): value is V1LibraryState {
+  return hasValidBaseFields(value) && value.version === 1;
+}
+
+function isV2LibraryState(value: unknown): value is LibraryState {
+  if (!hasValidBaseFields(value) || value.version !== 2) return false;
+  const state = value as Partial<LibraryState>;
+  return (
+    Array.isArray(state.dislikes) &&
+    state.dislikes.every((item) => typeof item === 'string') &&
+    !state.likes?.some((id) => state.dislikes?.includes(id)) &&
+    typeof state.useVideoFrames === 'boolean'
   );
 }

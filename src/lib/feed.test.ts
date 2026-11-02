@@ -4,11 +4,13 @@ import type { LibraryState, Video } from './types';
 import { buildHomeFeed } from './feed';
 
 const emptyState: LibraryState = {
-  version: 1,
+  version: 2,
   likes: [],
+  dislikes: [],
   watchLater: [],
   history: [],
   topicPreferences: {},
+  useVideoFrames: true,
 };
 
 function item(feed: ReturnType<typeof buildHomeFeed>, vid: string) {
@@ -115,5 +117,17 @@ describe('buildHomeFeed', () => {
     const second = buildHomeFeed(videos, emptyState, {}, '2026-11-02').map((entry) => entry.video.vid);
 
     expect(second).toEqual(first);
+  });
+
+  test('does not recommend a video the user marked as disliked', () => {
+    const disliked = makeVideo({
+      vid: 'disliked001',
+      title: 'Do not show this',
+      score: 30,
+      hn: { ...makeVideo().hn, recommenders: 30 },
+    });
+    const state = { ...emptyState, dislikes: [disliked.vid] };
+
+    expect(buildHomeFeed([disliked], state, {}, '2026-11-02')).toEqual([]);
   });
 });

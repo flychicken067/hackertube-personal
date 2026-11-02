@@ -54,12 +54,12 @@ export function buildHomeFeed(
   day: string,
   limit = 60,
 ): FeedItem[] {
-  const ranked = rankVideos(videos, state, day);
+  const ranked = rankVideos(videos, state, day).filter((video) => !state.dislikes.includes(video.vid));
   const videosById = new Map(ranked.map((video) => [video.vid, video]));
-  const excludedLiked = new Set(state.likes);
+  const excludedLiked = new Set([...state.likes, ...state.dislikes]);
   const excludedHistory = new Set(state.history.map((entry) => entry.vid));
   const exploredTopics = new Set(
-    [...state.likes, ...state.history.map((entry) => entry.vid)]
+    [...state.likes, ...state.dislikes, ...state.history.map((entry) => entry.vid)]
       .flatMap((vid) => videos.find((video) => video.vid === vid)?.categories ?? [])
       .map((category) => category.id),
   );

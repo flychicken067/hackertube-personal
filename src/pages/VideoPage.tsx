@@ -11,7 +11,7 @@ export function VideoPage() {
   const { vid = '' } = useParams();
   const catalog = useCatalog();
   const video = catalog.videos.find((item) => item.vid === vid);
-  const { state, markWatched, setSelectedId, toggleLike, toggleLater } = useLibrary();
+  const { state, markWatched, setSelectedId, toggleDislike, toggleLike, toggleLater } = useLibrary();
   const [relatedVideos, setRelatedVideos] = useState<Video[]>([]);
 
   useEffect(() => {
@@ -64,6 +64,7 @@ export function VideoPage() {
           <p className="watch-channel">{video.channel}</p>
           <div className="watch-actions">
             <button type="button" aria-pressed={state.likes.includes(video.vid)} onClick={() => toggleLike(video.vid)}>{state.likes.includes(video.vid) ? '已点赞' : '点赞'}</button>
+            <button type="button" aria-pressed={state.dislikes.includes(video.vid)} onClick={() => toggleDislike(video.vid)}>{state.dislikes.includes(video.vid) ? '已不喜欢' : '不喜欢'}</button>
             <button type="button" aria-pressed={state.watchLater.includes(video.vid)} onClick={() => toggleLater(video.vid)}>{state.watchLater.includes(video.vid) ? '已收藏' : '稍后看'}</button>
           </div>
           <h2>这段视频讲什么</h2>

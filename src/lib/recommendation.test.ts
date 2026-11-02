@@ -4,11 +4,13 @@ import { makeVideo } from '../test/fixtures';
 import type { LibraryState } from './types';
 
 const emptyState: LibraryState = {
-  version: 1,
+  version: 2,
   likes: [],
+  dislikes: [],
   watchLater: [],
   history: [],
   topicPreferences: {},
+  useVideoFrames: true,
 };
 
 describe('rankVideos', () => {
