@@ -5,7 +5,7 @@ import { exportLibraryState } from '../lib/storage';
 
 export function SettingsPage() {
   const catalog = useCatalog();
-  const { state, setTopicPreference, clear, importState } = useLibrary();
+  const { state, setTopicPreference, setUseVideoFrames, clear, importState } = useLibrary();
   const fileRef = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState('');
 
@@ -22,6 +22,13 @@ export function SettingsPage() {
   return (
     <div className="settings-page">
       <section className="page-intro compact"><div><p className="eyebrow">LOCAL ONLY</p><h1>设置</h1></div><p>这里没有账号。你可以随时导出或清除所有本地记录。</p></section>
+      <section className="settings-section">
+        <div><p className="eyebrow">THUMBNAILS</p><h2>缩略图</h2><p>自动帧更接近视频实际内容；关闭后显示上传者选择的封面。图片失效时会自动回退。</p></div>
+        <label className="setting-toggle">
+          <input type="checkbox" aria-label="使用视频中段自动帧" checked={state.useVideoFrames} onChange={(event) => setUseVideoFrames(event.target.checked)} />
+          <span><strong>使用视频中段自动帧</strong><small>{state.useVideoFrames ? '当前：代表性视频画面' : '当前：上传者封面'}</small></span>
+        </label>
+      </section>
       <section className="settings-section">
         <div><p className="eyebrow">DATA</p><h2>你的数据</h2><p>{state.likes.length} 个点赞，{state.dislikes.length} 个不喜欢，{state.history.length} 条历史，{state.watchLater.length} 个稍后看。</p></div>
         <div className="settings-actions">

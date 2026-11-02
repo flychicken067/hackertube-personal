@@ -16,7 +16,7 @@ export function VideoCard({ video, reason }: { video: Video; reason?: string }) 
   return (
     <article className={`video-card${selectedId === video.vid ? ' is-selected' : ''}`} data-video-card data-video-id={video.vid} tabIndex={0} onFocus={() => setSelectedId(video.vid)} onMouseEnter={() => setSelectedId(video.vid)}>
       <div className="thumbnail-wrap">
-        <Link className="thumb-link" to={`/watch/${video.vid}`} aria-label={`播放 ${video.title}`}><Thumbnail className="thumbnail" vid={video.vid} title="" />{video.duration && <span className="duration">{video.duration}</span>}</Link>
+        <Link className="thumb-link" to={`/watch/${video.vid}`} aria-label={`播放 ${video.title}`}><Thumbnail className="thumbnail" vid={video.vid} title="" mode={state.useVideoFrames ? 'frame' : 'upload'} />{video.duration && <span className="duration">{video.duration}</span>}</Link>
         <div className="quick-actions">
           <button type="button" className={liked ? 'is-active' : ''} aria-pressed={liked} aria-label={`${liked ? '取消点赞' : '点赞'} ${video.title}`} title="Like (L)" onClick={() => toggleLike(video.vid)}><Icon name="liked" size={18} /></button>
           <button type="button" className={later ? 'is-active' : ''} aria-pressed={later} aria-label={`${later ? '移出稍后看' : '稍后看'} ${video.title}`} title="Watch later (W)" onClick={() => toggleLater(video.vid)}><Icon name="later" size={18} /></button>

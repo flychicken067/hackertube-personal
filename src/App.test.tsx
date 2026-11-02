@@ -191,4 +191,16 @@ describe('App', () => {
     const saved = JSON.parse(window.localStorage.getItem('hackertube-personal:v2') ?? '{}');
     expect(saved.topicPreferences).toEqual({ 'distributed-systems': 2 });
   });
+
+  test('changes the thumbnail mode in Settings and stores it locally', async () => {
+    render(<App initialCatalog={catalog} />);
+    fireEvent.click(screen.getByRole('link', { name: 'Settings' }));
+
+    const preference = await screen.findByRole('checkbox', { name: '使用视频中段自动帧' });
+    expect(preference).toBeChecked();
+    fireEvent.click(preference);
+
+    const saved = JSON.parse(window.localStorage.getItem('hackertube-personal:v2') ?? '{}');
+    expect(saved.useVideoFrames).toBe(false);
+  });
 });
