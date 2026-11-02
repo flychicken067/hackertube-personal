@@ -43,11 +43,11 @@
 - Consumes: videos.jsonl, mentions.jsonl, related.jsonl, taxonomy.json, embedding_ids.json。
 - Produces: importHackertubeExport(inputDir, outputDir) 和后续任务所需静态索引。
 
-- [ ] 写失败测试：正确计数、损坏 JSONL、重复 ID、无效引用。
-- [ ] 运行目标测试，确认因导入器缺失而失败。
-- [ ] 实现流式 JSONL 读取、计数和 manifest；忽略原始 zip 与解压目录。
-- [ ] 运行目标测试和 npm run check:data。
-- [ ] 提交 feat: import HackerTube parity data。
+- [x] 写失败测试：正确计数、损坏 JSONL、重复 ID、无效引用。
+- [x] 运行目标测试，确认因导入器缺失而失败。
+- [x] 实现流式 JSONL 读取、计数和 manifest；忽略原始 zip 与解压目录。
+- [x] 运行目标测试和 npm run check:data。
+- [x] 提交 feat: import HackerTube parity data。
 
 ### Task 2: 评论分桶和懒加载
 
@@ -62,11 +62,11 @@
 - Consumes: Task 1 的 mentions 记录。
 - Produces: commentBucket(vid), loadVideoComments(vid)。
 
-- [ ] 写失败测试：普通 ID、连字符和下划线 ID、空记录、缺失分桶。
-- [ ] 运行测试并确认接口缺失。
-- [ ] 按 ID 首字符生成最多 64 个 URL-safe 分桶，视频页访问时才 fetch。
-- [ ] 验证 39,834 条评论全部可达。
-- [ ] 提交 feat: add lazy HN comment shards。
+- [x] 写失败测试：普通 ID、连字符和下划线 ID、空记录、缺失分桶。
+- [x] 运行测试并确认接口缺失。
+- [x] 按 ID 首字符生成最多 64 个 URL-safe 分桶，视频页访问时才 fetch。
+- [x] 验证 39,834 条评论全部可达。
+- [x] 提交 feat: add lazy HN comment shards。
 
 ### Task 3: 完整 HN 评论视频页
 
@@ -80,11 +80,11 @@
 - Consumes: Task 2 的 loadVideoComments。
 - Produces: HnComments 组件。
 
-- [ ] 写失败测试：加载、全部评论、立场、故事标题、HN 链接、空列表和加载失败。
-- [ ] 确认测试因组件缺失而失败。
-- [ ] 实现评论列表并保留摘要卡。
-- [ ] 运行组件、App 和完整测试。
-- [ ] 提交 feat: show all Hacker News comments。
+- [x] 写失败测试：加载、全部评论、立场、故事标题、HN 链接、空列表和加载失败。
+- [x] 确认测试因组件缺失而失败。
+- [x] 实现评论列表并保留摘要卡。
+- [x] 运行组件、App 和完整测试。
+- [x] 提交 feat: show all Hacker News comments。
 
 ### Task 4: 关联推荐和多路首页
 
@@ -107,11 +107,11 @@
 - Consumes: Task 1 的 related 索引和 LibraryState。
 - Produces: getRelatedVideos、buildHomeFeed 和 filterAndSortVideos。
 
-- [ ] 写失败测试：关联排名、无效 ID、点赞相似、共同推荐、经典、冷门、近期、未探索、每日稳定，以及年代、类型、时长、特征和六种排序方式。
-- [ ] 确认当前单一分数排序无法满足测试。
-- [ ] 实现去重多路 feed，每项携带可见推荐理由；新增查询参数驱动的 BrowsePage，对齐原版公开筛选器。
-- [ ] 视频页增加“HN 用户也推荐”，首页卡片增加理由。
-- [ ] 运行推荐测试和完整检查，提交 feat: match HackerTube recommendation mix。
+- [x] 写失败测试：关联排名、无效 ID、点赞相似、共同推荐、经典、冷门、近期、未探索、每日稳定，以及年代、类型、时长、特征和六种排序方式。
+- [x] 确认当前单一分数排序无法满足测试。
+- [x] 实现去重多路 feed，每项携带可见推荐理由；新增查询参数驱动的 BrowsePage，对齐原版公开筛选器。
+- [x] 视频页增加“HN 用户也推荐”，首页卡片增加理由。
+- [x] 运行推荐测试和完整检查，提交 feat: match HackerTube recommendation mix。
 
 ### Task 5: 本地反馈模型和状态迁移
 
@@ -127,11 +127,11 @@
 - Consumes: 现有 v1 localStorage。
 - Produces: 向后兼容的 v2 LibraryState，含 dislikes 和 useVideoFrames。
 
-- [ ] 写失败测试：v1 到 v2、点赞与不喜欢互斥、损坏导入保护、导出完整性。
-- [ ] 确认测试因 v2 字段与迁移缺失而失败。
-- [ ] 实现迁移、不喜欢操作和缩略图偏好。
-- [ ] 运行存储、组件和完整测试。
-- [ ] 提交 feat: add dislikes and thumbnail preference。
+- [x] 写失败测试：v1 到 v2、点赞与不喜欢互斥、损坏导入保护、导出完整性。
+- [x] 确认测试因 v2 字段与迁移缺失而失败。
+- [x] 实现迁移、不喜欢操作和缩略图偏好。
+- [x] 运行存储、组件和完整测试。
+- [x] 提交 feat: add dislikes and thumbnail preference。
 
 ### Task 6: 中段帧和默认缩略图切换
 
@@ -145,10 +145,10 @@
 - Consumes: Task 5 的 useVideoFrames。
 - Produces: Thumbnail mode 参数。
 
-- [ ] 写失败测试：frame、upload 和图片失败回退。
-- [ ] 确认现有组件不接受 mode 而失败。
-- [ ] 实现切换和设置说明。
-- [ ] 运行缩略图与完整测试，提交 feat: toggle representative video frames。
+- [x] 写失败测试：frame、upload 和图片失败回退。
+- [x] 确认现有组件不接受 mode 而失败。
+- [x] 实现切换和设置说明。
+- [x] 运行缩略图与完整测试，提交 feat: toggle representative video frames。
 
 ### Task 7: 语义话题搜索
 
@@ -164,11 +164,11 @@
 - Consumes: taxonomy 描述、summary、why、tags、categories。
 - Produces: 带命中原因的加权 searchVideos。
 
-- [ ] 写失败测试：标题不含查询原词的同义话题、多词权重和空查询。
-- [ ] 确认当前 substring 搜索失败。
-- [ ] 实现 taxonomy 扩展、字段权重和相似度排序。
-- [ ] 添加 Playwright 主题查询回归并运行完整检查。
-- [ ] 提交 feat: add semantic topic search。
+- [x] 写失败测试：标题不含查询原词的同义话题、多词权重和空查询。
+- [x] 确认当前 substring 搜索失败。
+- [x] 实现 taxonomy 扩展、字段权重和相似度排序。
+- [x] 添加 Playwright 主题查询回归并运行完整检查。
+- [x] 提交 feat: add semantic topic search。
 
 ### Task 8: YouTube 元数据管线
 
@@ -209,8 +209,8 @@
 **Files:**
 - Modify only if needed: .github/workflows/deploy-pages.yml
 
-- [ ] 运行 npm run check、npm run e2e 和 git diff --check。
-- [ ] 推送 main 并等待 GitHub Pages 成功。
-- [ ] 在线检查规格 10 项、控制台、断图和手机布局。
-- [ ] 确认本地 HEAD、远端 main 与部署 SHA 一致。
-- [ ] 汇报一致项和本项目特有扩展，完成持续目标。
+- [x] 运行 npm run check、npm run e2e 和 git diff --check。
+- [x] 推送 main 并等待 GitHub Pages 成功。
+- [x] 在线检查规格 10 项、控制台、断图和手机布局。
+- [x] 确认本地 HEAD、远端 main 与部署 SHA 一致。
+- [x] 汇报一致项和本项目特有扩展，完成持续目标。
