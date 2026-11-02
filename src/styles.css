@@ -131,6 +131,20 @@ blockquote { margin: 24px 0; padding: 18px 20px; border-left: 3px solid var(--or
 .topic-list { display: flex; flex-wrap: wrap; gap: 6px; margin: 16px 0; }
 .topic-list a { padding: 6px 8px; border-radius: 7px; background: var(--bg); text-decoration: none; font-size: 12px; }
 .hn-link { display: block; padding: 9px; border-radius: 9px; background: var(--bg); text-align: center; text-decoration: none; font-size: 13px; font-weight: 700; }
+.hn-comments { margin-top: 36px; padding-top: 4px; border-top: 1px solid var(--line); }
+.hn-comments-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.hn-comments-heading > span { color: var(--muted); font-size: 13px; }
+.hn-comments-message { padding: 16px; border-radius: 10px; color: var(--muted); background: var(--soft); }
+.hn-comment-list { display: grid; gap: 12px; }
+.hn-comment { padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.hn-comment-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; }
+.hn-stance { padding: 4px 7px; border-radius: 6px; color: var(--text); background: var(--soft); font-weight: 700; }
+.hn-stance[data-stance="strong_rec"], .hn-stance[data-stance="rec"] { color: #fff; background: var(--orange); }
+.hn-comment h3 { margin: 12px 0 8px; font-size: 15px; line-height: 1.4; }
+.hn-comment-why { margin: 0 0 10px; color: var(--text); font-size: 13px; font-weight: 700; }
+.hn-comment-text { margin: 0; color: var(--muted); line-height: 1.65; white-space: pre-wrap; overflow-wrap: anywhere; }
+.hn-comment blockquote { margin: 14px 0 0; padding: 12px 14px; font-size: 13px; }
+.hn-comment > a { display: inline-block; margin-top: 14px; color: var(--orange); font-size: 13px; font-weight: 700; text-decoration: none; }
 
 .settings-page { max-width: 1080px; }
 .settings-page .page-intro { margin-bottom: 12px; padding-bottom: 22px; border-bottom: 1px solid var(--line); }

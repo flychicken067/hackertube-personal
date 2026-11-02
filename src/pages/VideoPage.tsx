@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useCatalog } from '../lib/CatalogContext';
 import { useLibrary } from '../lib/LibraryContext';
+import { HnComments } from '../components/HnComments';
 
 export function VideoPage() {
   const { vid = '' } = useParams();
@@ -51,6 +52,7 @@ export function VideoPage() {
           <h2>{video.source === 'karpathy' ? 'About this source' : 'HN 为什么推荐'}</h2>
           <p>{video.whyHn}</p>
           {video.quote && <blockquote>“{video.quote.text}”</blockquote>}
+          {video.source !== 'karpathy' && <HnComments vid={video.vid} />}
         </section>
         <aside className="video-facts">
           <dl>
