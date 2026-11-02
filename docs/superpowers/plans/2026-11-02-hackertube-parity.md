@@ -184,11 +184,11 @@
 - Consumes: YOUTUBE_API_KEY、视频 ID、已有缓存。
 - Produces: 可断点续跑的 metadata JSON 和合并后的 duration、views、published 字段。
 
-- [ ] 写失败测试：50 ID 分批、缓存跳过、配额错误保留进度、无密钥提示、元数据合并。
-- [ ] 确认当前脚本不满足断点和合并契约。
-- [ ] 实现安全、可重跑的 API 流程，日志不输出密钥。
-- [ ] 无密钥时完成代码后再向用户给出最短创建步骤；获得密钥后更新全部视频。
-- [ ] 运行脚本和完整测试，提交 feat: enrich videos with YouTube metadata。
+- [x] 写失败测试：50 ID 分批、缓存跳过、配额错误保留进度、无密钥提示、元数据合并。
+- [x] 确认当前脚本不满足断点和合并契约。
+- [x] 实现安全、可重跑的 API 流程，日志不输出密钥。
+- [x] 无密钥时完成代码后再向用户给出最短创建步骤；获得密钥后更新全部视频。
+- [x] 运行脚本和完整测试，提交 feat: enrich videos with YouTube metadata。
 
 ### Task 9: 端到端一致性验收和文档
 
@@ -198,11 +198,11 @@
 - Modify: README.md
 - Modify: HUMAN-UI-EVAL.md
 
-- [ ] 写失败 E2E：多路首页、同义搜索、完整评论、关联视频、不喜欢、缩略图开关、导入导出、Karpathy。
-- [ ] 逐项修正到测试通过。
-- [ ] 运行 npm run check 和 npm run e2e，并检查桌面与手机宽度。
-- [ ] 更新许可、数据更新、API 密钥和部署文档。
-- [ ] 提交 test: verify HackerTube feature parity。
+- [x] 写失败 E2E：多路首页、同义搜索、完整评论、关联视频、不喜欢、缩略图开关、导入导出、Karpathy。
+- [x] 逐项修正到测试通过。
+- [x] 运行 npm run check 和 npm run e2e，并检查桌面与手机宽度。
+- [x] 更新许可、数据更新、API 密钥和部署文档。
+- [x] 提交 test: verify HackerTube feature parity。
 
 ### Task 10: 上线和线上逐项确认
 

@@ -62,7 +62,7 @@ HACKERTUBE_SOURCE_DIR="/你的路径/hackertube-data" npm run data:build
 
 ## 补充 YouTube 元数据
 
-HackerTube 导出不包含 YouTube 时长、发布日期、播放量、点赞量、是否删除和是否允许嵌入。这些字段用于 Browse 的日期、时长、冷门佳作与播放量排序。没有元数据时，页面仍能播放并显示 HN 信息，但这些筛选会没有完整结果。
+HackerTube 导出不包含 YouTube 时长、发布日期、播放量、点赞量、是否删除和是否允许嵌入。这些字段用于 Browse 的日期、时长、冷门佳作与播放量排序。当前目录已用 YouTube Data API v3 为 6,454 条 HN 视频补齐元数据；以后更新公开导出时，可按下述流程刷新。
 
 创建密钥只需下面几步（免费，不需要信用卡）：
 
@@ -78,7 +78,7 @@ npm run data:build
 npm run check
 ```
 
-脚本每次最多请求 50 个 ID，6,454 条视频约需 130 次请求。原始响应缓存在被 Git 忽略的 `data/youtube-meta.jsonl`；中断或配额用尽后再次运行会跳过已有 ID，从断点继续。API 密钥只从环境变量读取，不会写入日志、代码或前端数据。
+脚本每次最多请求 50 个 ID，6,454 条视频约需 130 次请求。原始响应缓存在被 Git 忽略的 `data/youtube-meta.jsonl`；中断或配额用尽后再次运行会跳过已有 ID，从断点继续。API 密钥只从环境变量读取，不会写入日志、代码或前端数据。Google 默认每天提供 10,000 配额单位，`videos.list` 每批消耗 1 单位。
 
 如果已经有缓存，只想重新合并到现有目录，也可以运行：
 
