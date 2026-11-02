@@ -10,12 +10,18 @@ describe('validateCatalog', () => {
       missingCoreFields: 0,
       duplicateIds: 0,
       unknownTopicReferences: 0,
+      invalidDurations: 0,
     });
   });
 
   test('rejects a catalog with a missing video id', () => {
     const catalog = makeCatalog([makeVideo({ vid: '' })]);
     expect(() => validateCatalog(catalog)).toThrow('核心字段');
+  });
+
+  test('rejects catalog durations that the browser filters cannot parse', () => {
+    const catalog = makeCatalog([makeVideo({ duration: 'P1DT1S' })]);
+    expect(() => validateCatalog(catalog)).toThrow('时长格式');
   });
 });
 

@@ -19,16 +19,21 @@ export function validateCatalog(catalog: Catalog) {
     (count, video) => count + video.categories.filter((category) => !topicIds.has(category.id)).length,
     0,
   );
+  const invalidDurations = catalog.videos.filter(
+    (video) => video.duration !== null && !/^\d+:[0-5]\d(?::[0-5]\d)?$/.test(video.duration),
+  ).length;
   const report = {
     videos: catalog.videos.length,
     topics: topicIds.size,
     missingCoreFields,
     duplicateIds,
     unknownTopicReferences,
+    invalidDurations,
   };
   if (missingCoreFields) throw new Error(`有 ${missingCoreFields} 条视频缺少核心字段`);
   if (duplicateIds) throw new Error(`有 ${duplicateIds} 个重复视频 ID`);
   if (unknownTopicReferences) throw new Error(`有 ${unknownTopicReferences} 个未知话题引用`);
+  if (invalidDurations) throw new Error(`有 ${invalidDurations} 条视频的时长格式无法用于筛选`);
   return report;
 }
 

@@ -48,4 +48,10 @@ describe('formatIsoDuration', () => {
     expect(formatIsoDuration('PT3M4S')).toBe('3:04');
     expect(formatIsoDuration('PT2H0M9S')).toBe('2:00:09');
   });
+
+  test('converts day-based YouTube durations into total hours', () => {
+    expect(formatIsoDuration('P1DT1S')).toBe('24:00:01');
+    expect(formatIsoDuration('P2DT6H13M3S')).toBe('54:13:03');
+    expect(formatIsoDuration('P0D')).toBe('0:00');
+  });
 });
