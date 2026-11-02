@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Icon } from '../components/Icon';
 import { VideoGrid } from '../components/VideoGrid';
 import { useCatalog } from '../lib/CatalogContext';
 import { useLibrary } from '../lib/LibraryContext';
-import { rankVideos } from '../lib/recommendation';
+import { buildHomeFeed } from '../lib/feed';
+import { loadRelatedIndex, type RelatedIndex } from '../lib/related';
 
 type SourceFilter = 'all' | 'hackernews' | 'karpathy';
 
@@ -12,9 +13,19 @@ export function HomePage() {
   const { state } = useLibrary();
   const [showFilters, setShowFilters] = useState(false);
   const [source, setSource] = useState<SourceFilter>('all');
+  const [related, setRelated] = useState<RelatedIndex>({});
   const day = new Date().toISOString().slice(0, 10);
-  const ranked = rankVideos(catalog.videos, state, day);
-  const videos = ranked.filter((video) => source === 'all' || (source === 'karpathy' ? video.source === 'karpathy' : video.source !== 'karpathy')).slice(0, 60);
+  useEffect(() => {
+    let active = true;
+    loadRelatedIndex().then((index) => {
+      if (active) setRelated(index);
+    }).catch(() => undefined);
+    return () => { active = false; };
+  }, []);
+  const feed = useMemo(() => buildHomeFeed(catalog.videos, state, related, day), [catalog.videos, day, related, state]);
+  const visible = feed.filter((item) => source === 'all' || (source === 'karpathy' ? item.video.source === 'karpathy' : item.video.source !== 'karpathy')).slice(0, 60);
+  const videos = visible.map((item) => item.video);
+  const reasons = Object.fromEntries(visible.map((item) => [item.video.vid, item.reason]));
   return (
     <>
       <h1 className="sr-only">Home</h1>
@@ -24,7 +35,7 @@ export function HomePage() {
           {([['all', 'All'], ['hackernews', 'Hacker News'], ['karpathy', 'Karpathy']] as const).map(([value, label]) => <button type="button" key={value} className={source === value ? 'is-selected' : ''} onClick={() => setSource(value)}>{label}</button>)}
         </div>}
       </div>
-      <VideoGrid videos={videos} />
+      <VideoGrid videos={videos} reasons={reasons} />
     </>
   );
 }

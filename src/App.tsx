@@ -7,6 +7,7 @@ import { LibraryProvider, useLibrary } from './lib/LibraryContext';
 import { mergeKarpathySource } from './lib/dataSources';
 import type { Catalog, ChannelSource } from './lib/types';
 import { CategoriesPage } from './pages/CategoriesPage';
+import { BrowsePage } from './pages/BrowsePage';
 import { HomePage } from './pages/HomePage';
 import { KarpathyPage } from './pages/KarpathyPage';
 import { LongsPage } from './pages/LongsPage';
@@ -51,6 +52,7 @@ export function App({ initialCatalog }: { initialCatalog?: Catalog }) {
               <Route path="karpathy" element={<KarpathyPage />} />
               <Route path="longs" element={<LongsPage />} />
               <Route path="categories" element={<CategoriesPage />} />
+              <Route path="browse" element={<BrowsePage />} />
               <Route path="playlists" element={<PlaylistsPage />} />
               <Route path="search" element={<SearchPage />} />
               <Route path="topic/:id" element={<TopicPage />} />

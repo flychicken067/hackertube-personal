@@ -76,6 +76,7 @@ a { color: inherit; }
 .video-card h2 { display: -webkit-box; margin: 0 0 7px; overflow: hidden; font-size: 17px; font-weight: 700; line-height: 1.32; letter-spacing: -.2px; text-overflow: ellipsis; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 .video-card h2 a { text-decoration: none; }
 .channel, .video-meta { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.45; }
+.recommendation-reason { display: flex; gap: 5px; margin: 6px 0 0; color: var(--orange); font-size: 12px; line-height: 1.35; }
 .channel { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .empty-state { margin: 48px 0; padding: 48px 24px; border-radius: 12px; color: var(--muted); background: var(--soft); text-align: center; }
 
@@ -145,6 +146,15 @@ blockquote { margin: 24px 0; padding: 18px 20px; border-left: 3px solid var(--or
 .hn-comment-text { margin: 0; color: var(--muted); line-height: 1.65; white-space: pre-wrap; overflow-wrap: anywhere; }
 .hn-comment blockquote { margin: 14px 0 0; padding: 12px 14px; font-size: 13px; }
 .hn-comment > a { display: inline-block; margin-top: 14px; color: var(--orange); font-size: 13px; font-weight: 700; text-decoration: none; }
+.watch-related { margin-top: 42px; padding-top: 24px; border-top: 1px solid var(--line); }
+.watch-related > h2 { margin: 0 0 18px; font-size: 20px; }
+
+.browse-controls { display: flex; flex-wrap: wrap; align-items: end; gap: 10px; margin-bottom: 14px; padding: 16px; border-radius: 12px; background: var(--soft); }
+.browse-controls > label:not(.browse-check) { display: grid; gap: 5px; color: var(--muted); font-size: 12px; }
+.browse-controls select { min-width: 145px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; color: var(--text); background: var(--surface); }
+.browse-check { display: flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 8px; font-size: 13px; }
+.browse-controls button { min-height: 36px; padding: 0 12px; border: 0; border-radius: 8px; background: var(--surface); cursor: pointer; font-weight: 700; }
+.browse-count { margin: 0 0 20px; color: var(--muted); font-size: 13px; }
 
 .settings-page { max-width: 1080px; }
 .settings-page .page-intro { margin-bottom: 12px; padding-bottom: 22px; border-bottom: 1px solid var(--line); }

@@ -3,8 +3,9 @@ import { useLibrary } from '../lib/LibraryContext';
 import type { Video } from '../lib/types';
 import { Icon } from './Icon';
 import { Thumbnail } from './Thumbnail';
+import { RecommendationReason } from './RecommendationReason';
 
-export function VideoCard({ video }: { video: Video }) {
+export function VideoCard({ video, reason }: { video: Video; reason?: string }) {
   const { state, selectedId, setSelectedId, toggleLike, toggleLater } = useLibrary();
   const liked = state.likes.includes(video.vid);
   const later = state.watchLater.includes(video.vid);
@@ -25,6 +26,7 @@ export function VideoCard({ video }: { video: Video }) {
         <h2><Link data-open-video to={`/watch/${video.vid}`}>{video.title}</Link></h2>
         <p className="channel">{video.channel}</p>
         <p className="video-meta">{metadata}</p>
+        {reason && <RecommendationReason>{reason}</RecommendationReason>}
       </div>
     </article>
   );

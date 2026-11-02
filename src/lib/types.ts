@@ -41,6 +41,9 @@ export interface Video {
   source?: 'hackernews' | 'karpathy';
   viewsLabel?: string;
   publishedLabel?: string;
+  publishedAt?: string | null;
+  viewCount?: number | null;
+  likeCount?: number | null;
   sourceLabel?: string;
   startSeconds?: number;
   sourceOrder?: number;

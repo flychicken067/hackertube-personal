@@ -1,19 +1,38 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { VideoGrid } from '../components/VideoGrid';
 import { useCatalog } from '../lib/CatalogContext';
 import { useLibrary } from '../lib/LibraryContext';
 import { HnComments } from '../components/HnComments';
+import { getRelatedVideos, loadRelatedIndex } from '../lib/related';
+import type { Video } from '../lib/types';
 
 export function VideoPage() {
   const { vid = '' } = useParams();
-  const video = useCatalog().videos.find((item) => item.vid === vid);
+  const catalog = useCatalog();
+  const video = catalog.videos.find((item) => item.vid === vid);
   const { state, markWatched, setSelectedId, toggleLike, toggleLater } = useLibrary();
+  const [relatedVideos, setRelatedVideos] = useState<Video[]>([]);
 
   useEffect(() => {
     if (!video) return;
     setSelectedId(video.vid);
     markWatched(video.vid);
   }, [video?.vid]);
+
+  useEffect(() => {
+    let active = true;
+    if (!video || video.source === 'karpathy') {
+      setRelatedVideos([]);
+      return () => { active = false; };
+    }
+    loadRelatedIndex().then((index) => {
+      if (active) setRelatedVideos(getRelatedVideos(video.vid, index, catalog.videos, 6).map((item) => item.video));
+    }).catch(() => {
+      if (active) setRelatedVideos([]);
+    });
+    return () => { active = false; };
+  }, [catalog.videos, video?.vid]);
 
   if (!video) return <p className="empty-state">没找到这个视频。</p>;
   const unavailable = video.available === false || video.embeddable === false;
@@ -71,6 +90,7 @@ export function VideoPage() {
           {video.quote && <a className="hn-link" href={`https://news.ycombinator.com/item?id=${video.quote.hnCommentId}`} target="_blank" rel="noreferrer">查看原 HN 评论</a>}
         </aside>
       </div>
+      {relatedVideos.length > 0 && <section className="watch-related"><h2>HN 用户也推荐</h2><VideoGrid videos={relatedVideos} /></section>}
     </article>
   );
 }

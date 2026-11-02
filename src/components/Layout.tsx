@@ -7,6 +7,7 @@ const nav = [
   ['/', 'Home', 'home'],
   ['/karpathy', 'Karpathy', 'play'],
   ['/longs', 'Longs', 'longs'],
+  ['/browse', 'Browse', 'categories'],
   ['/liked', 'Liked', 'liked'],
   ['/history', 'History', 'history'],
   ['/later', 'Watch later', 'later'],
@@ -32,7 +33,7 @@ export function Layout() {
       <aside className={`sidebar${menuOpen ? ' is-open' : ''}`}>
         <nav aria-label="主导航">
           {nav.map(([to, label, icon], index) => (
-            <div key={to} className={index === 3 || index === 6 || index === 8 ? 'nav-section' : undefined}>
+            <div key={to} className={index === 4 || index === 7 || index === 9 ? 'nav-section' : undefined}>
               <NavLink to={to} end={to === '/'} onClick={() => setMenuOpen(false)}><Icon name={icon} /><span>{label}</span></NavLink>
             </div>
           ))}

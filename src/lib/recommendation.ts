@@ -30,7 +30,7 @@ export function rankVideos(videos: Video[], _state: LibraryState, _day: string):
     .map(({ video }) => video);
 }
 
-function dailyJitter(vid: string, day: string): number {
+export function dailyJitter(vid: string, day: string): number {
   let hash = 2166136261;
   for (const char of `${day}:${vid}`) {
     hash ^= char.charCodeAt(0);
