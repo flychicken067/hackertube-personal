@@ -123,6 +123,13 @@ describe('importHackertubeExport', () => {
     expect(JSON.parse(fs.readFileSync(path.join(outputDir, 'parity-taxonomy.json'), 'utf8'))).toMatchObject({
       version: 'fixture-v1',
     });
+    expect(JSON.parse(fs.readFileSync(path.join(outputDir, 'search-index.json'), 'utf8'))).toMatchObject({
+      version: 1,
+      topics: [
+        expect.objectContaining({ id: 'topic-one', areaName: 'Area one' }),
+        expect.objectContaining({ id: 'topic-two', areaName: 'Area one' }),
+      ],
+    });
     expect(JSON.parse(fs.readFileSync(path.join(outputDir, 'embedding-ids.json'), 'utf8'))).toEqual([
       'abcdefghijk',
       'lmnopqrstuv',

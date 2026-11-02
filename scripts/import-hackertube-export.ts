@@ -3,6 +3,7 @@ import path from 'node:path';
 import readline from 'node:readline';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { commentBucket } from '../src/lib/comments';
+import { createSearchIndex } from '../src/lib/searchIndex';
 import type { HnComment } from '../src/lib/types';
 
 type VideoRow = {
@@ -38,7 +39,7 @@ type Taxonomy = {
   areas: Array<{
     id: string;
     name: string;
-    categories: Array<{ id: string; name: string; description?: string }>;
+    categories: Array<{ id: string; name: string; description: string }>;
   }>;
 };
 
@@ -219,6 +220,7 @@ export async function importHackertubeExport(inputDir: string, outputDir: string
     Object.fromEntries(related.map((row) => [row.vid, row.related])),
   );
   writeJson(path.join(outputDir, 'parity-taxonomy.json'), taxonomy);
+  writeJson(path.join(outputDir, 'search-index.json'), createSearchIndex(taxonomy.areas));
   writeJson(path.join(outputDir, 'embedding-ids.json'), embeddingIds);
   const commentBuckets = buildCommentBuckets(mentions);
   const commentsDir = path.join(outputDir, 'comments');

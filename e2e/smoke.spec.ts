@@ -32,8 +32,15 @@ test('keyboard like is saved locally', async ({ page }) => {
   await page.keyboard.press('j');
   const selectedId = await page.locator('[data-video-card]:focus').getAttribute('data-video-id');
   await page.keyboard.press('l');
-  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('hackertube-personal:v1') ?? '{}'));
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('hackertube-personal:v2') ?? '{}'));
   expect(saved.likes).toContain(selectedId);
+});
+
+test('semantic topic search works without title keyword overlap', async ({ page }) => {
+  await page.goto('/#/search?q=storage%20engine');
+  await expect(page.getByRole('heading', { name: 'Search results' })).toBeVisible();
+  await expect(page.getByText('话题匹配：Databases & storage').first()).toBeVisible();
+  await expect(page.locator('[data-video-card]').first()).toBeVisible();
 });
 
 test('layout has no horizontal overflow', async ({ page }) => {
