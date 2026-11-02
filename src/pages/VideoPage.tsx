@@ -16,6 +16,9 @@ export function VideoPage() {
 
   if (!video) return <p className="empty-state">没找到这个视频。</p>;
   const unavailable = video.available === false || video.embeddable === false;
+  const youtubeWatchUrl = video.startSeconds
+    ? `${video.url}${video.url.includes('?') ? '&' : '?'}t=${video.startSeconds}s`
+    : video.url;
   return (
     <article className="watch-page">
       <div className="player-frame">
@@ -30,7 +33,10 @@ export function VideoPage() {
           />
         )}
       </div>
-      <p className="embed-note">如果播放器没有响应，<a href={video.url} target="_blank" rel="noreferrer">去 YouTube 打开</a>。</p>
+      <div className="youtube-login-help">
+        <p><strong>播放器要求登录？</strong><span>嵌入播放器无法完成 YouTube 登录或人机验证。</span></p>
+        <a href={youtubeWatchUrl} target="_blank" rel="noopener">在 YouTube 登录并观看 <span aria-hidden="true">↗</span></a>
+      </div>
       <div className="watch-layout">
         <section>
           <p className="eyebrow">{video.contentType.toUpperCase()} / {video.level.toUpperCase()}</p>

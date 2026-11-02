@@ -61,13 +61,15 @@ describe('App', () => {
 
   test('likes the selected video with the l keyboard shortcut and saves it locally', async () => {
     render(<App initialCatalog={catalog} />);
+    const firstVideoId = document.querySelector<HTMLElement>('[data-video-card]')?.dataset.videoId;
+    expect(firstVideoId).toBeTruthy();
 
     fireEvent.keyDown(window, { key: 'j' });
     fireEvent.keyDown(window, { key: 'l' });
 
     await waitFor(() => {
       const saved = JSON.parse(window.localStorage.getItem('hackertube-personal:v1') ?? '{}');
-      expect(saved.likes).toContain('systems0001');
+      expect(saved.likes).toContain(firstVideoId);
     });
   });
 
@@ -119,6 +121,27 @@ describe('App', () => {
       'https://www.youtube-nocookie.com/embed/featured001?rel=0&start=245',
     );
     expect(screen.getByText('Featured on karpathy.ai')).toBeInTheDocument();
+  });
+
+  test('offers the exact YouTube video when embedded login cannot complete', async () => {
+    const loginFallback = makeCatalog([
+      makeVideo({
+        vid: 'featured001',
+        url: 'https://www.youtube.com/watch?v=featured001',
+        title: 'Featured Karpathy talk',
+        source: 'karpathy',
+        startSeconds: 245,
+      } as Partial<ReturnType<typeof makeVideo>>),
+    ]);
+    render(<App initialCatalog={loginFallback} />);
+
+    fireEvent.click(screen.getByRole('link', { name: 'Featured Karpathy talk' }));
+
+    expect(await screen.findByText('嵌入播放器无法完成 YouTube 登录或人机验证。')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: '在 YouTube 登录并观看' })).toHaveAttribute(
+      'href',
+      'https://www.youtube.com/watch?v=featured001&t=245s',
+    );
   });
 
   test('shows Karpathy videos in the curated source order', async () => {

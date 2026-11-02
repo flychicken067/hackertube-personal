@@ -106,8 +106,11 @@ a { color: inherit; }
 .player-unavailable { display: grid; place-content: center; height: 100%; padding: 40px; color: #fff; text-align: center; }
 .player-unavailable strong { font-size: 22px; }
 .player-unavailable p { color: #bbb; }
-.embed-note { margin: 10px 0 0; color: var(--muted); font-size: 12px; }
-.embed-note a { color: var(--orange); }
+.youtube-login-help { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin: 12px 0 0; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--soft); }
+.youtube-login-help p { display: flex; flex-direction: column; gap: 3px; margin: 0; font-size: 13px; }
+.youtube-login-help p span { color: var(--muted); }
+.youtube-login-help a { flex: 0 0 auto; padding: 9px 13px; border-radius: 18px; color: #fff; background: var(--orange); text-decoration: none; font-size: 13px; font-weight: 700; }
+.youtube-login-help a:hover { filter: brightness(.94); }
 .watch-layout { display: grid; grid-template-columns: minmax(0,3fr) minmax(250px,1fr); gap: 42px; margin-top: 26px; }
 .watch-layout h1 { margin: 5px 0 8px; font-size: 25px; line-height: 1.25; }
 .watch-channel { margin: 0 0 18px; color: var(--muted); }
@@ -199,7 +202,8 @@ blockquote { margin: 24px 0; padding: 18px 20px; border-left: 3px solid var(--or
   .playlist-grid { grid-template-columns: 1fr; }
   .watch-page { margin: -16px -12px 0; }
   .player-frame { border-radius: 0; }
-  .embed-note, .watch-layout { margin-right: 12px; margin-left: 12px; }
+  .youtube-login-help, .watch-layout { margin-right: 12px; margin-left: 12px; }
+  .youtube-login-help { align-items: flex-start; flex-direction: column; }
   .watch-layout { grid-template-columns: 1fr; gap: 22px; }
   .video-facts { order: -1; }
   .settings-section { grid-template-columns: 1fr; gap: 16px; }
