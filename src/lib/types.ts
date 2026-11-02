@@ -88,6 +88,21 @@ export interface Catalog {
   videos: Video[];
 }
 
+export type HnCommentStance = 'strong_rec' | 'rec' | 'reference' | 'joke' | 'critical' | string;
+
+export interface HnComment {
+  hnCommentId: number;
+  hnUrl: string;
+  vid: string;
+  author: string;
+  month: string;
+  storyTitle: string;
+  stance: HnCommentStance;
+  why: string;
+  quote: string;
+  text: string;
+}
+
 export interface HistoryEntry {
   vid: string;
   watchedAt: string;

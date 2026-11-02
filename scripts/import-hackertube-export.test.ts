@@ -33,8 +33,30 @@ function writeValidExport(inputDir: string) {
     },
   ]);
   writeJsonl(path.join(inputDir, 'mentions.jsonl'), [
-    { hn_comment_id: 1, vid: 'abcdefghijk', month: '2018-10' },
-    { hn_comment_id: 2, vid: 'lmnopqrstuv', month: '2026-02' },
+    {
+      hn_comment_id: 1,
+      hn_url: 'https://news.ycombinator.com/item?id=1',
+      vid: 'abcdefghijk',
+      author: 'alice',
+      month: '2018-10',
+      story_title: 'First story',
+      stance: 'rec',
+      why: 'Clear explanation',
+      quote: 'Worth watching',
+      text: 'A detailed recommendation.',
+    },
+    {
+      hn_comment_id: 2,
+      hn_url: 'https://news.ycombinator.com/item?id=2',
+      vid: 'lmnopqrstuv',
+      author: 'bob',
+      month: '2026-02',
+      story_title: 'Second story',
+      stance: 'reference',
+      why: '',
+      quote: '',
+      text: 'A useful reference.',
+    },
   ]);
   writeJsonl(path.join(inputDir, 'related.jsonl'), [
     { vid: 'abcdefghijk', related: [{ vid: 'lmnopqrstuv', shared_recommenders: 2 }] },
@@ -105,6 +127,21 @@ describe('importHackertubeExport', () => {
       'abcdefghijk',
       'lmnopqrstuv',
     ]);
+    expect(JSON.parse(fs.readFileSync(path.join(outputDir, 'comments/index.json'), 'utf8'))).toEqual({
+      version: 1,
+      total: 2,
+      buckets: { '61': 1, '6c': 1 },
+    });
+    expect(JSON.parse(fs.readFileSync(path.join(outputDir, 'comments/61.json'), 'utf8'))).toEqual({
+      abcdefghijk: [
+        expect.objectContaining({
+          hnCommentId: 1,
+          storyTitle: 'First story',
+          stance: 'rec',
+          text: 'A detailed recommendation.',
+        }),
+      ],
+    });
   });
 
   test('reports the file and line for malformed JSONL', async () => {

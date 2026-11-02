@@ -2,6 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import readline from 'node:readline';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { commentBucket } from '../src/lib/comments';
+import type { HnComment } from '../src/lib/types';
 
 type VideoRow = {
   vid: string;
@@ -9,8 +11,16 @@ type VideoRow = {
 };
 
 type MentionRow = {
+  hn_comment_id: number;
+  hn_url?: string;
   vid: string;
+  author?: string;
   month?: string;
+  story_title?: string;
+  stance?: string;
+  why?: string;
+  quote?: string;
+  text?: string;
 };
 
 type RelatedEntry = {
@@ -88,6 +98,30 @@ function duplicateCount(values: string[]) {
 
 function writeJson(filename: string, value: unknown) {
   fs.writeFileSync(filename, `${JSON.stringify(value)}\n`);
+}
+
+function buildCommentBuckets(mentions: MentionRow[]) {
+  const buckets = new Map<string, Record<string, HnComment[]>>();
+  for (const mention of mentions) {
+    const bucketName = commentBucket(mention.vid);
+    const bucket = buckets.get(bucketName) ?? {};
+    const comments = bucket[mention.vid] ?? [];
+    comments.push({
+      hnCommentId: mention.hn_comment_id,
+      hnUrl: mention.hn_url ?? `https://news.ycombinator.com/item?id=${mention.hn_comment_id}`,
+      vid: mention.vid,
+      author: mention.author ?? '',
+      month: mention.month ?? '',
+      storyTitle: mention.story_title ?? '',
+      stance: mention.stance ?? 'reference',
+      why: mention.why ?? '',
+      quote: mention.quote ?? '',
+      text: mention.text ?? '',
+    });
+    bucket[mention.vid] = comments;
+    buckets.set(bucketName, bucket);
+  }
+  return buckets;
 }
 
 export async function importHackertubeExport(inputDir: string, outputDir: string): Promise<ParityManifest> {
@@ -186,6 +220,21 @@ export async function importHackertubeExport(inputDir: string, outputDir: string
   );
   writeJson(path.join(outputDir, 'parity-taxonomy.json'), taxonomy);
   writeJson(path.join(outputDir, 'embedding-ids.json'), embeddingIds);
+  const commentBuckets = buildCommentBuckets(mentions);
+  const commentsDir = path.join(outputDir, 'comments');
+  fs.rmSync(commentsDir, { recursive: true, force: true });
+  fs.mkdirSync(commentsDir, { recursive: true });
+  const bucketCounts: Record<string, number> = {};
+  for (const [bucketName, bucket] of [...commentBuckets.entries()].sort(([left], [right]) => left.localeCompare(right))) {
+    const count = Object.values(bucket).reduce((sum, comments) => sum + comments.length, 0);
+    bucketCounts[bucketName] = count;
+    writeJson(path.join(commentsDir, `${bucketName}.json`), bucket);
+  }
+  writeJson(path.join(commentsDir, 'index.json'), {
+    version: 1,
+    total: Object.values(bucketCounts).reduce((sum, count) => sum + count, 0),
+    buckets: bucketCounts,
+  });
 
   return manifest;
 }
