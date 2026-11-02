@@ -1,4 +1,5 @@
 import { matchSearchTopics, normalizeSearchText, tokenizeSearch, type SearchTopicIndex } from './searchIndex';
+import type { SemanticHit } from './semanticSearch';
 import type { Video } from './types';
 
 export interface SearchResult {
@@ -57,6 +58,36 @@ export function searchVideos(videos: Video[], query: string, index?: SearchTopic
           .sort((left, right) => right.weight - left.weight)[0]?.reason ?? reason;
       }
       return { video, score, reason };
+    })
+    .filter((result): result is SearchResult => result !== null)
+    .sort((left, right) =>
+      right.score - left.score ||
+      right.video.score - left.video.score ||
+      left.video.vid.localeCompare(right.video.vid),
+    );
+}
+
+export function mergeSemanticResults(
+  videos: Video[],
+  lexicalResults: SearchResult[],
+  semanticHits: SemanticHit[],
+): SearchResult[] {
+  const videosById = new Map(videos.map((video) => [video.vid, video]));
+  const lexicalById = new Map(lexicalResults.map((result) => [result.video.vid, result]));
+  const semanticById = new Map(semanticHits.map((hit) => [hit.vid, hit.similarity]));
+  const candidates = new Set([...lexicalById.keys(), ...semanticById.keys()]);
+
+  return [...candidates]
+    .map((vid): SearchResult | null => {
+      const video = videosById.get(vid);
+      if (!video) return null;
+      const lexical = lexicalById.get(vid);
+      const similarity = semanticById.get(vid) ?? 0;
+      return {
+        video,
+        score: similarity * 100 + (lexical?.score ?? 0) * 1.25,
+        reason: lexical?.reason === '标题匹配' ? lexical.reason : similarity > 0 ? '语义相似' : lexical?.reason ?? '相关内容匹配',
+      };
     })
     .filter((result): result is SearchResult => result !== null)
     .sort((left, right) =>

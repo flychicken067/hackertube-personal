@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { mergeKarpathySource } from '../src/lib/dataSources';
+import { parseFloat16Npy } from '../src/lib/semanticSearch';
 import type { Catalog, ChannelSource } from '../src/lib/types';
 import type { ParityManifest } from './import-hackertube-export';
 
@@ -85,9 +86,16 @@ function run() {
   const filename = path.join(projectRoot, 'public/data/catalog.json');
   const karpathyFilename = path.join(projectRoot, 'public/data/karpathy.json');
   const parityManifestFilename = path.join(projectRoot, 'public/data/parity-manifest.json');
+  const embeddingIdsFilename = path.join(projectRoot, 'public/data/embedding-ids.json');
+  const embeddingsFilename = path.join(projectRoot, 'public/data/embeddings.npy');
   const catalog = JSON.parse(fs.readFileSync(filename, 'utf8')) as Catalog;
   const karpathy = JSON.parse(fs.readFileSync(karpathyFilename, 'utf8')) as ChannelSource;
   const parityManifest = JSON.parse(fs.readFileSync(parityManifestFilename, 'utf8')) as ParityManifest;
+  const embeddingIds = JSON.parse(fs.readFileSync(embeddingIdsFilename, 'utf8')) as unknown[];
+  const embeddingsBuffer = fs.readFileSync(embeddingsFilename);
+  const embeddings = parseFloat16Npy(
+    embeddingsBuffer.buffer.slice(embeddingsBuffer.byteOffset, embeddingsBuffer.byteOffset + embeddingsBuffer.byteLength),
+  );
   const report = validateCatalog(catalog);
   const karpathyReport = validateChannelSource(karpathy);
   const parityReport = validateParityManifest(parityManifest, report);
@@ -95,6 +103,7 @@ function run() {
   const mergedIds = new Set(merged.videos.map((video) => video.vid));
   if (report.videos === 0) throw new Error('数据文件没有视频');
   if (mergedIds.size !== merged.videos.length) throw new Error('合并后的数据仍有重复视频 ID');
+  if (embeddings.rows !== embeddingIds.length || embeddings.dimensions !== 384) throw new Error('语义向量矩阵与视频编号不一致');
   console.log(`data ok: ${report.videos} HN videos + ${karpathyReport.videos} Karpathy videos = ${merged.videos.length} unique videos, ${report.topics} topics, ${parityReport.mentions} HN comments, 0 broken references`);
 }
 

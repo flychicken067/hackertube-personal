@@ -78,6 +78,18 @@ function writeValidExport(inputDir: string) {
     }),
   );
   fs.writeFileSync(path.join(inputDir, 'embedding_ids.json'), JSON.stringify(['abcdefghijk', 'lmnopqrstuv']));
+  fs.writeFileSync(path.join(inputDir, 'embeddings.npy'), makeEmptyNpy(2, 384));
+}
+
+function makeEmptyNpy(rows: number, dimensions: number) {
+  const prefixLength = 10;
+  const shape = `{'descr': '<f2', 'fortran_order': False, 'shape': (${rows}, ${dimensions}), }`;
+  const padding = (16 - ((prefixLength + shape.length + 1) % 16)) % 16;
+  const header = Buffer.from(`${shape}${' '.repeat(padding)}\n`, 'ascii');
+  const prefix = Buffer.alloc(prefixLength);
+  prefix.set([0x93, 0x4e, 0x55, 0x4d, 0x50, 0x59, 1, 0]);
+  prefix.writeUInt16LE(header.length, 8);
+  return Buffer.concat([prefix, header, Buffer.alloc(rows * dimensions * 2)]);
 }
 
 afterEach(() => {
@@ -134,6 +146,7 @@ describe('importHackertubeExport', () => {
       'abcdefghijk',
       'lmnopqrstuv',
     ]);
+    expect(fs.readFileSync(path.join(outputDir, 'embeddings.npy'))).toEqual(fs.readFileSync(path.join(inputDir, 'embeddings.npy')));
     expect(JSON.parse(fs.readFileSync(path.join(outputDir, 'comments/index.json'), 'utf8'))).toEqual({
       version: 1,
       total: 2,

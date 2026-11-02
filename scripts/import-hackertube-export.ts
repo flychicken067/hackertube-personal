@@ -4,6 +4,7 @@ import readline from 'node:readline';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { commentBucket } from '../src/lib/comments';
 import { createSearchIndex } from '../src/lib/searchIndex';
+import { parseFloat16Npy } from '../src/lib/semanticSearch';
 import type { HnComment } from '../src/lib/types';
 
 type VideoRow = {
@@ -131,6 +132,7 @@ export async function importHackertubeExport(inputDir: string, outputDir: string
   const related = await readJsonl<RelatedRow>(path.join(inputDir, 'related.jsonl'));
   const taxonomy = JSON.parse(fs.readFileSync(path.join(inputDir, 'taxonomy.json'), 'utf8')) as Taxonomy;
   const embeddingIds = JSON.parse(fs.readFileSync(path.join(inputDir, 'embedding_ids.json'), 'utf8')) as string[];
+  const embeddingsFilename = path.join(inputDir, 'embeddings.npy');
 
   if (!Array.isArray(taxonomy.areas) || !Array.isArray(embeddingIds)) {
     throw new Error('公开导出结构不正确');
@@ -160,6 +162,13 @@ export async function importHackertubeExport(inputDir: string, outputDir: string
   const invalidEmbeddingReferences = embeddingIds.filter((vid) => !knownVideoIds.has(vid)).length;
   const embeddedVideoIds = new Set(embeddingIds);
   const missingEmbeddingIds = videoIds.filter((vid) => !embeddedVideoIds.has(vid)).length;
+  const embeddingsBuffer = fs.readFileSync(embeddingsFilename);
+  const parsedEmbeddings = parseFloat16Npy(
+    embeddingsBuffer.buffer.slice(embeddingsBuffer.byteOffset, embeddingsBuffer.byteOffset + embeddingsBuffer.byteLength),
+  );
+  if (parsedEmbeddings.rows !== embeddingIds.length || parsedEmbeddings.dimensions !== 384) {
+    throw new Error(`语义向量矩阵尺寸不正确：${parsedEmbeddings.rows} × ${parsedEmbeddings.dimensions}`);
+  }
 
   if (duplicateVideoIds) {
     throw new Error(`公开导出包含 ${duplicateVideoIds} 个重复视频 ID`);
@@ -222,6 +231,7 @@ export async function importHackertubeExport(inputDir: string, outputDir: string
   writeJson(path.join(outputDir, 'parity-taxonomy.json'), taxonomy);
   writeJson(path.join(outputDir, 'search-index.json'), createSearchIndex(taxonomy.areas));
   writeJson(path.join(outputDir, 'embedding-ids.json'), embeddingIds);
+  fs.copyFileSync(embeddingsFilename, path.join(outputDir, 'embeddings.npy'));
   const commentBuckets = buildCommentBuckets(mentions);
   const commentsDir = path.join(outputDir, 'comments');
   fs.rmSync(commentsDir, { recursive: true, force: true });

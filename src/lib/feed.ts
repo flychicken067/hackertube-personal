@@ -1,6 +1,7 @@
 import { isHiddenGem } from './browse';
 import { dailyJitter, rankVideos } from './recommendation';
 import type { RelatedIndex } from './related';
+import type { SimilarityIndex } from './semanticSearch';
 import type { LibraryState, Video } from './types';
 
 export type FeedLane =
@@ -39,6 +40,28 @@ function relatedLane(
     .map(([vid, shared]) => ({ video: videosById.get(vid)!, lane, reason: reason(shared) }));
 }
 
+function similarityLane(
+  seeds: string[],
+  similarity: SimilarityIndex,
+  videosById: Map<string, Video>,
+  excluded: Set<string>,
+): FeedItem[] {
+  const scores = new Map<string, number>();
+  for (const seed of seeds) {
+    for (const entry of similarity[seed] ?? []) {
+      if (excluded.has(entry.vid) || !videosById.has(entry.vid)) continue;
+      scores.set(entry.vid, Math.max(scores.get(entry.vid) ?? 0, entry.similarity));
+    }
+  }
+  return [...scores.entries()]
+    .sort(([leftVid, left], [rightVid, right]) => right - left || leftVid.localeCompare(rightVid))
+    .map(([vid, score]) => ({
+      video: videosById.get(vid)!,
+      lane: 'liked-similarity' as const,
+      reason: `与你喜欢的视频内容相似 · ${Math.round(score * 100)}%`,
+    }));
+}
+
 function sortWithDailyVariety(videos: Video[], day: string) {
   return [...videos].sort((left, right) =>
     right.score - left.score ||
@@ -53,6 +76,7 @@ export function buildHomeFeed(
   related: RelatedIndex,
   day: string,
   limit = 60,
+  similarity: SimilarityIndex = {},
 ): FeedItem[] {
   const ranked = rankVideos(videos, state, day).filter((video) => !state.dislikes.includes(video.vid));
   const videosById = new Map(ranked.map((video) => [video.vid, video]));
@@ -66,14 +90,21 @@ export function buildHomeFeed(
   const currentYear = Number(day.slice(0, 4));
 
   const lanes: FeedItem[][] = [
-    relatedLane(
-      state.likes,
-      'liked-similarity',
-      (shared) => `与你喜欢的视频相似 · ${shared} 位共同推荐者`,
-      related,
-      videosById,
-      new Set([...excludedLiked, ...excludedHistory]),
-    ),
+    Object.keys(similarity).length
+      ? similarityLane(
+          state.likes,
+          similarity,
+          videosById,
+          new Set([...excludedLiked, ...excludedHistory]),
+        )
+      : relatedLane(
+          state.likes,
+          'liked-similarity',
+          (shared) => `与你喜欢的视频相似 · ${shared} 位共同推荐者`,
+          related,
+          videosById,
+          new Set([...excludedLiked, ...excludedHistory]),
+        ),
     relatedLane(
       state.history.slice(0, 20).map((entry) => entry.vid),
       'co-recommenders',

@@ -33,6 +33,23 @@ describe('buildHomeFeed', () => {
     expect(item(feed, similar.vid)?.reason).toContain('喜欢');
   });
 
+  test('uses official vector similarity for liked-video personalization when available', () => {
+    const liked = makeVideo({ vid: 'liked000001', title: 'Liked video' });
+    const semantic = makeVideo({ vid: 'semantic001', title: 'Conceptually similar' });
+    const state = { ...emptyState, likes: [liked.vid] };
+    const feed = buildHomeFeed(
+      [liked, semantic],
+      state,
+      {},
+      '2026-11-02',
+      60,
+      { [liked.vid]: [{ vid: semantic.vid, similarity: 0.86 }] },
+    );
+
+    expect(item(feed, semantic.vid)).toMatchObject({ lane: 'liked-similarity' });
+    expect(item(feed, semantic.vid)?.reason).toBe('与你喜欢的视频内容相似 · 86%');
+  });
+
   test('uses recent history for a co-recommender lane', () => {
     const watched = makeVideo({ vid: 'watched0001', title: 'Watched video' });
     const related = makeVideo({ vid: 'related0001', title: 'Related video' });

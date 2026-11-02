@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { searchVideos } from './search';
+import { mergeSemanticResults, searchVideos } from './search';
 import { makeVideo } from '../test/fixtures';
 import { createSearchIndex } from './searchIndex';
 
@@ -98,5 +98,18 @@ describe('searchVideos', () => {
 
   test('returns an empty list for a blank query', () => {
     expect(searchVideos([makeVideo()], '   ')).toEqual([]);
+  });
+
+  test('merges true vector hits while preserving a strong title match', () => {
+    const direct = makeVideo({ vid: 'direct00001', title: 'Storage engine internals' });
+    const conceptual = makeVideo({ vid: 'concept0001', title: 'How databases remember' });
+    const lexical = searchVideos([direct, conceptual], 'storage engine');
+    const results = mergeSemanticResults([direct, conceptual], lexical, [
+      { vid: conceptual.vid, similarity: 0.78 },
+      { vid: direct.vid, similarity: 0.7 },
+    ]);
+
+    expect(results.map((entry) => entry.video.vid)).toEqual([direct.vid, conceptual.vid]);
+    expect(results[1].reason).toBe('语义相似');
   });
 });

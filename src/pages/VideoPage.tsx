@@ -5,6 +5,7 @@ import { useCatalog } from '../lib/CatalogContext';
 import { useLibrary } from '../lib/LibraryContext';
 import { HnComments } from '../components/HnComments';
 import { getRelatedVideos, loadRelatedIndex } from '../lib/related';
+import { findSimilarVideos, loadEmbeddingIndex } from '../lib/semanticSearch';
 import type { Video } from '../lib/types';
 
 export function VideoPage() {
@@ -26,10 +27,16 @@ export function VideoPage() {
       setRelatedVideos([]);
       return () => { active = false; };
     }
-    loadRelatedIndex().then((index) => {
-      if (active) setRelatedVideos(getRelatedVideos(video.vid, index, catalog.videos, 6).map((item) => item.video));
-    }).catch(() => {
-      if (active) setRelatedVideos([]);
+    Promise.allSettled([loadRelatedIndex(), loadEmbeddingIndex()]).then(([hnResult, semanticResult]) => {
+      if (!active) return;
+      const hnVideos = hnResult.status === 'fulfilled'
+        ? getRelatedVideos(video.vid, hnResult.value, catalog.videos, 8).map((item) => item.video)
+        : [];
+      const semanticVideos = semanticResult.status === 'fulfilled'
+        ? findSimilarVideos(video, semanticResult.value, catalog.videos, 12).map((item) => item.video)
+        : [];
+      const merged = new Map([...hnVideos, ...semanticVideos].map((item) => [item.vid, item]));
+      setRelatedVideos([...merged.values()].slice(0, 12));
     });
     return () => { active = false; };
   }, [catalog.videos, video?.vid]);
@@ -95,7 +102,7 @@ export function VideoPage() {
           {video.quote && <a className="hn-link" href={`https://news.ycombinator.com/item?id=${video.quote.hnCommentId}`} target="_blank" rel="noreferrer">查看原 HN 评论</a>}
         </aside>
       </div>
-      {relatedVideos.length > 0 && <section className="watch-related"><h2>HN 用户也推荐</h2><VideoGrid videos={relatedVideos} /></section>}
+      {relatedVideos.length > 0 && <section className="watch-related"><h2>相似视频与 HN 用户也推荐</h2><VideoGrid videos={relatedVideos} /></section>}
     </article>
   );
 }

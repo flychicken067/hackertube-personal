@@ -1,12 +1,14 @@
 # HackerTube 个人放映室
 
-一个纯静态的个人视频放映室。它合并公开数据：HackerTube 导出的 Hacker News 推荐视频、Andrej Karpathy 官方 YouTube 频道的公开列表，以及他个人官网列出的 featured talks 与 podcasts。相同 YouTube ID 会自动去重，再根据当前浏览器里的观看、点赞、不喜欢和话题偏好生成多路推荐。
+一个纯静态的个人视频放映室。它合并公开数据：HackerTube 导出的 Hacker News 推荐视频、Andrej Karpathy 官方 YouTube 频道的公开列表，以及他个人官网列出的 featured talks 与 podcasts。相同 YouTube ID 会自动去重，再根据当前浏览器里的观看、点赞、不喜欢、话题偏好和官方视频向量生成多路推荐。
 
 在线使用：[https://flychicken067.github.io/hackertube-personal/](https://flychicken067.github.io/hackertube-personal/)
 
 没有账号、后端或远程个人数据。视频使用 `youtube-nocookie.com` 嵌入，本项目不托管视频文件。
 
-核心功能包括：完整 HN 评论、共同推荐视频、语义话题搜索、Browse 筛选与排序、代表性中段缩略图切换、Liked / History / Watch later、本地导入导出，以及独立的 37 条 Karpathy 视频专区。
+核心功能包括：完整 HN 评论、共同推荐视频、基于官方 384 维向量的真实语义搜索与相似视频、Browse 筛选与排序、代表性中段缩略图切换、Liked / History / Watch later、本地导入导出，以及独立的 37 条 Karpathy 视频专区。
+
+语义搜索完全在浏览器本地运行，不上传查询、不需要账号或 API 密钥。第一次使用会按需下载约 60 MB 的量化搜索模型和运行组件，之后由浏览器缓存；关键词结果会先立即显示，模型不可用时也不会影响基础搜索。
 
 ## 本地启动
 
@@ -45,7 +47,7 @@ npm run e2e
 
 1. 从 [HackerTube 数据页](https://hackertube.org/data) 下载新的官方压缩包。
 2. 解压到项目内的 `data/hackertube-export/hackertube-data/`。这个目录已被 Git 忽略，原始导出不会提交。
-3. 重新验证导出并生成评论分桶、关联索引和搜索索引：
+3. 重新验证导出并生成评论分桶、关联索引、搜索索引和浏览器语义向量：
 
 ```bash
 npm run data:import

@@ -83,6 +83,7 @@ a { color: inherit; }
 .page-heading { margin: 0 0 28px; padding: 12px 0 24px; border-bottom: 1px solid var(--line); }
 .page-heading h1 { margin: 0 0 8px; font-size: 30px; line-height: 1.2; letter-spacing: -.6px; }
 .page-heading p { max-width: 760px; margin: 0; color: var(--muted); font-size: 14px; line-height: 1.55; }
+.page-heading .semantic-status { margin-top: 5px; color: var(--accent); }
 .channel-heading { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 18px; margin: 0 0 30px; padding: 10px 0 26px; border-bottom: 1px solid var(--line); }
 .channel-avatar { display: grid; place-items: center; width: 76px; height: 76px; border-radius: 50%; color: #fff; background: #111; font-size: 22px; font-weight: 700; }
 .channel-heading h1 { margin: 0 0 6px; font-size: 28px; }
