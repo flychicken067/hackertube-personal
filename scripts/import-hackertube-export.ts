@@ -243,7 +243,9 @@ export async function importHackertubeExport(inputDir: string, outputDir: string
 
 async function run() {
   const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-  const inputDir = path.resolve(process.argv[2] ?? path.join(projectRoot, 'data/hackertube-export/hackertube-data'));
+  const inputDir = path.resolve(
+    process.argv[2] ?? process.env.HACKERTUBE_SOURCE_DIR ?? path.join(projectRoot, 'data/hackertube-export/hackertube-data'),
+  );
   const outputDir = path.resolve(process.argv[3] ?? path.join(projectRoot, 'public/data'));
   const manifest = await importHackertubeExport(inputDir, outputDir);
   console.log(

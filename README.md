@@ -42,10 +42,11 @@ npm run e2e
 ## 更新 HackerTube 数据
 
 1. 从 [HackerTube 数据页](https://hackertube.org/data) 下载新的官方压缩包。
-2. 解压到项目相邻的 `../source-data/hackertube-data/hackertube-data/`。
-3. 重新生成前端数据：
+2. 解压到项目内的 `data/hackertube-export/hackertube-data/`。这个目录已被 Git 忽略，原始导出不会提交。
+3. 重新验证导出并生成评论分桶、关联索引和搜索索引：
 
 ```bash
+npm run data:import
 npm run data:build
 npm run check:data
 ```
@@ -53,22 +54,35 @@ npm run check:data
 如果数据放在其他地方：
 
 ```bash
+HACKERTUBE_SOURCE_DIR="/你的路径/hackertube-data" npm run data:import
 HACKERTUBE_SOURCE_DIR="/你的路径/hackertube-data" npm run data:build
 ```
 
-## 可选：补充时长和播放状态
+## 补充 YouTube 元数据
 
-HackerTube 导出不包含 YouTube 时长、是否删除和是否允许嵌入。没有这些数据时，页面会显示“时长未知”并提供 YouTube 原链接。
+HackerTube 导出不包含 YouTube 时长、发布日期、播放量、点赞量、是否删除和是否允许嵌入。这些字段用于 Browse 的日期、时长、冷门佳作与播放量排序。没有元数据时，页面仍能播放并显示 HN 信息，但这些筛选会没有完整结果。
 
-如需补齐，先在 Google Cloud 启用 **YouTube Data API v3** 并创建只限该 API 的密钥，然后在当前终端运行：
+创建密钥只需下面几步（免费，不需要信用卡）：
+
+1. 打开 [Google Cloud Console](https://console.cloud.google.com/) 并创建一个项目。
+2. 在 **APIs & Services → Library** 启用 **YouTube Data API v3**。
+3. 在 **Credentials → Create credentials → API key** 创建密钥；建议把 API restrictions 限制为 YouTube Data API v3。
+4. 只在当前终端设置环境变量并运行：
 
 ```bash
 export YOUTUBE_API_KEY="你的密钥"
 npm run data:youtube
 npm run data:build
+npm run check
 ```
 
-密钥只从环境变量读取，不会写入代码或前端数据。请不要把密钥放进 `.env` 以外的可提交文件。
+脚本每次最多请求 50 个 ID，6,454 条视频约需 130 次请求。原始响应缓存在被 Git 忽略的 `data/youtube-meta.jsonl`；中断或配额用尽后再次运行会跳过已有 ID，从断点继续。API 密钥只从环境变量读取，不会写入日志、代码或前端数据。
+
+如果已经有缓存，只想重新合并到现有目录，也可以运行：
+
+```bash
+npm run data:youtube:apply
+```
 
 ## 更新 Karpathy 数据
 

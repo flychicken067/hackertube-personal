@@ -82,6 +82,10 @@ export function VideoPage() {
               <div><dt>Published</dt><dd>{video.publishedLabel ?? '—'}</dd></div>
               <div><dt>Source</dt><dd>{video.sourceLabel ?? 'Official YouTube channel'}</dd></div>
             </> : <>
+              {video.viewCount !== null && video.viewCount !== undefined && <div><dt>播放量</dt><dd>{video.viewCount.toLocaleString('en-US')}</dd></div>}
+              {video.publishedAt && <div><dt>发布日期</dt><dd>{video.publishedAt.slice(0, 10)}</dd></div>}
+              <div><dt>类型</dt><dd>{video.contentType}</dd></div>
+              <div><dt>时效</dt><dd>{video.shelfLife}</dd></div>
               <div><dt>HN 推荐</dt><dd>{video.hn.recommenders} 人推荐</dd></div>
               <div><dt>被提及</dt><dd>{video.hn.mentions} 次</dd></div>
               <div><dt>时间跨度</dt><dd>{video.hn.firstYear}–{video.hn.lastYear}</dd></div>

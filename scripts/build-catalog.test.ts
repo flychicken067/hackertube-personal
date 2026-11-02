@@ -31,7 +31,7 @@ const sourceVideo = {
 
 describe('catalog builder', () => {
   test('maps the official snake-case export into the browser catalog shape', () => {
-    expect(mapVideo(sourceVideo, { duration: '1:02:03', available: true, embeddable: false })).toMatchObject({
+    expect(mapVideo(sourceVideo, { duration: '1:02:03', available: true, embeddable: false, publishedAt: '2024-01-02T00:00:00Z', viewCount: 100, likeCount: 9 })).toMatchObject({
       vid: 'abcdefghijk',
       whyHn: 'Why HN points people to it.',
       categories: [{ areaName: 'Software Engineering' }],
@@ -40,6 +40,9 @@ describe('catalog builder', () => {
       duration: '1:02:03',
       available: true,
       embeddable: false,
+      publishedAt: '2024-01-02T00:00:00Z',
+      viewCount: 100,
+      likeCount: 9,
     });
   });
 

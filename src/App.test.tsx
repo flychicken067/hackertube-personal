@@ -144,6 +144,27 @@ describe('App', () => {
     );
   });
 
+  test('shows enriched YouTube facts on a Hacker News video page', async () => {
+    const enriched = makeCatalog([
+      makeVideo({
+        vid: 'metadata001',
+        title: 'Metadata example',
+        duration: '42:10',
+        publishedAt: '2024-05-06T07:08:09Z',
+        viewCount: 12345,
+        contentType: 'talk',
+        shelfLife: 'evergreen',
+      }),
+    ]);
+    render(<App initialCatalog={enriched} />);
+    fireEvent.click(screen.getByRole('link', { name: 'Metadata example' }));
+
+    expect(await screen.findByText('12,345')).toBeInTheDocument();
+    expect(screen.getByText('2024-05-06')).toBeInTheDocument();
+    expect(screen.getByText('talk')).toBeInTheDocument();
+    expect(screen.getByText('evergreen')).toBeInTheDocument();
+  });
+
   test('shows Karpathy videos in the curated source order', async () => {
     const unordered = makeCatalog([
       makeVideo({ vid: 'second00001', title: 'Second source item', source: 'karpathy', sourceOrder: 1 } as Partial<ReturnType<typeof makeVideo>>),

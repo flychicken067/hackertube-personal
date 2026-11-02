@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import type { Catalog, TopicArea, Video } from '../src/lib/types';
+import { youtubeMetadataMap, type ParsedYoutubeMetadata, type YoutubeMetadataRow } from './apply-youtube-meta';
 
 interface SourceVideo {
   vid: string;
@@ -29,11 +30,7 @@ interface SourceVideo {
   score: number;
 }
 
-interface VideoMetadata {
-  duration?: string | null;
-  available?: boolean | null;
-  embeddable?: boolean | null;
-}
+type VideoMetadata = Partial<ParsedYoutubeMetadata>;
 
 interface SourceTaxonomy {
   areas: TopicArea[];
@@ -78,6 +75,9 @@ export function mapVideo(source: SourceVideo, meta: VideoMetadata = {}): Video {
     duration: meta.duration ?? null,
     available: meta.available ?? null,
     embeddable: meta.embeddable ?? null,
+    publishedAt: meta.publishedAt ?? null,
+    viewCount: meta.viewCount ?? null,
+    likeCount: meta.likeCount ?? null,
   };
 }
 
@@ -105,40 +105,24 @@ function readJsonLines<T>(filename: string): T[] {
 
 function readMetadata(filename: string): Map<string, VideoMetadata> {
   if (!fs.existsSync(filename)) return new Map();
-  const result = new Map<string, VideoMetadata>();
-  for (const row of readJsonLines<{ vid: string; item?: Record<string, any> | null }>(filename)) {
-    const item = row.item;
-    result.set(row.vid, {
-      duration: item?.contentDetails?.duration ? formatIsoDuration(item.contentDetails.duration as string) : null,
-      available: !!item,
-      embeddable: typeof item?.status?.embeddable === 'boolean' ? item.status.embeddable : null,
-    });
-  }
-  return result;
-}
-
-function formatIsoDuration(value: string): string {
-  const match = value.match(/^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/);
-  if (!match) return value;
-  const hours = Number(match[1] ?? 0);
-  const minutes = Number(match[2] ?? 0);
-  const seconds = Number(match[3] ?? 0);
-  return hours
-    ? `${hours}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
-    : `${minutes}:${String(seconds).padStart(2, '0')}`;
+  return youtubeMetadataMap(readJsonLines<YoutubeMetadataRow>(filename));
 }
 
 function run() {
   const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
   const sourceDir = process.env.HACKERTUBE_SOURCE_DIR
     ? path.resolve(process.env.HACKERTUBE_SOURCE_DIR)
-    : path.resolve(projectRoot, '../source-data/hackertube-data/hackertube-data');
+    : path.resolve(projectRoot, 'data/hackertube-export/hackertube-data');
   const output = path.resolve(projectRoot, 'public/data/catalog.json');
   const dataGuide = fs.readFileSync(path.join(sourceDir, 'DATA.md'), 'utf8');
   const generated = dataGuide.match(/Exported (\d{4}-\d{2}-\d{2})/)?.[1] ?? new Date().toISOString().slice(0, 10);
   const videos = readJsonLines<SourceVideo>(path.join(sourceDir, 'videos.jsonl'));
   const taxonomy = JSON.parse(fs.readFileSync(path.join(sourceDir, 'taxonomy.json'), 'utf8')) as SourceTaxonomy;
-  const metadata = readMetadata(path.join(sourceDir, 'youtube_meta.jsonl'));
+  const projectMetadata = process.env.YOUTUBE_METADATA_FILE
+    ? path.resolve(process.env.YOUTUBE_METADATA_FILE)
+    : path.join(projectRoot, 'data/youtube-meta.jsonl');
+  const metadataFile = fs.existsSync(projectMetadata) ? projectMetadata : path.join(sourceDir, 'youtube_meta.jsonl');
+  const metadata = readMetadata(metadataFile);
   const catalog = buildCatalog(videos, taxonomy, metadata, generated);
 
   fs.mkdirSync(path.dirname(output), { recursive: true });
