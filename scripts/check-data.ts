@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { mergeKarpathySource } from '../src/lib/dataSources';
 import type { Catalog, ChannelSource } from '../src/lib/types';
+import type { ParityManifest } from './import-hackertube-export';
 
 export function validateCatalog(catalog: Catalog) {
   if (!catalog || !Array.isArray(catalog.videos) || !Array.isArray(catalog.areas)) {
@@ -44,19 +45,52 @@ export function validateChannelSource(source: ChannelSource) {
   return { videos: source.videos.length, duplicateIds, missingCoreFields };
 }
 
+export function validateParityManifest(
+  manifest: ParityManifest,
+  catalogReport: { videos: number; topics: number },
+) {
+  if (
+    !manifest ||
+    manifest.version !== 1 ||
+    manifest.source !== 'HackerTube public export' ||
+    !manifest.counts ||
+    !manifest.validation
+  ) {
+    throw new Error('公开导出清单结构不正确');
+  }
+  const brokenReferences = Object.values(manifest.validation).reduce((sum, value) => sum + value, 0);
+  if (brokenReferences) throw new Error(`公开导出仍有 ${brokenReferences} 个数据问题`);
+  if (
+    manifest.counts.videos !== catalogReport.videos ||
+    manifest.counts.topics !== catalogReport.topics ||
+    manifest.counts.embeddingIds !== manifest.counts.videos
+  ) {
+    throw new Error('公开导出清单与目录不一致');
+  }
+  return {
+    videos: manifest.counts.videos,
+    mentions: manifest.counts.mentions,
+    topics: manifest.counts.topics,
+    brokenReferences,
+  };
+}
+
 function run() {
   const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
   const filename = path.join(projectRoot, 'public/data/catalog.json');
   const karpathyFilename = path.join(projectRoot, 'public/data/karpathy.json');
+  const parityManifestFilename = path.join(projectRoot, 'public/data/parity-manifest.json');
   const catalog = JSON.parse(fs.readFileSync(filename, 'utf8')) as Catalog;
   const karpathy = JSON.parse(fs.readFileSync(karpathyFilename, 'utf8')) as ChannelSource;
+  const parityManifest = JSON.parse(fs.readFileSync(parityManifestFilename, 'utf8')) as ParityManifest;
   const report = validateCatalog(catalog);
   const karpathyReport = validateChannelSource(karpathy);
+  const parityReport = validateParityManifest(parityManifest, report);
   const merged = mergeKarpathySource(catalog, karpathy);
   const mergedIds = new Set(merged.videos.map((video) => video.vid));
   if (report.videos === 0) throw new Error('数据文件没有视频');
   if (mergedIds.size !== merged.videos.length) throw new Error('合并后的数据仍有重复视频 ID');
-  console.log(`data ok: ${report.videos} HN videos + ${karpathyReport.videos} Karpathy videos = ${merged.videos.length} unique videos, ${report.topics} topics, 0 broken references`);
+  console.log(`data ok: ${report.videos} HN videos + ${karpathyReport.videos} Karpathy videos = ${merged.videos.length} unique videos, ${report.topics} topics, ${parityReport.mentions} HN comments, 0 broken references`);
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {

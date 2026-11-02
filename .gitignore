@@ -3,5 +3,7 @@ dist/
 .env
 playwright-report/
 test-results/
+data/hackertube-data.zip
+data/hackertube-export/
 
 .gstack/
