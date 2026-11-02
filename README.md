@@ -1,10 +1,12 @@
 # HackerTube 个人放映室
 
-一个纯静态的个人视频放映室。它合并公开数据：HackerTube 导出的 Hacker News 推荐视频、Andrej Karpathy 官方 YouTube 频道的公开列表，以及他个人官网列出的 featured talks 与 podcasts。相同 YouTube ID 会自动去重，再根据当前浏览器里的观看、点赞和话题偏好排序。
+一个纯静态的个人视频放映室。它合并公开数据：HackerTube 导出的 Hacker News 推荐视频、Andrej Karpathy 官方 YouTube 频道的公开列表，以及他个人官网列出的 featured talks 与 podcasts。相同 YouTube ID 会自动去重，再根据当前浏览器里的观看、点赞、不喜欢和话题偏好生成多路推荐。
 
 在线使用：[https://flychicken067.github.io/hackertube-personal/](https://flychicken067.github.io/hackertube-personal/)
 
 没有账号、后端或远程个人数据。视频使用 `youtube-nocookie.com` 嵌入，本项目不托管视频文件。
+
+核心功能包括：完整 HN 评论、共同推荐视频、语义话题搜索、Browse 筛选与排序、代表性中段缩略图切换、Liked / History / Watch later、本地导入导出，以及独立的 37 条 Karpathy 视频专区。
 
 ## 本地启动
 
@@ -37,7 +39,7 @@ npm run build
 npm run e2e
 ```
 
-`e2e/smoke.spec.ts` 会用桌面和手机尺寸确认首页能打开、数据能加载、搜索和快捷键可用、页面没有横向溢出，并收集页面与控制台错误。
+`e2e/smoke.spec.ts` 和 `e2e/parity.spec.ts` 会用桌面和手机尺寸确认首页、语义搜索、完整评论、关联推荐、不喜欢、缩略图切换、导入导出、Karpathy 专区、快捷键与响应式布局，并收集页面与控制台错误。
 
 ## 更新 HackerTube 数据
 
